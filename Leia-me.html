@@ -476,65 +476,102 @@ dialog[open] { display: flex; flex-direction: column; }
 
   /* ---------- Documento de exemplo ---------- */
   var SAMPLE = [
-    '# Do arquivo ao desenho',
-    '',
-    'O Leia-me abre um arquivo Markdown, mostra o texto formatado e **desenha os diagramas Mermaid** que estiverem nele. Cada desenho pode ser baixado em SVG ou PNG.',
-    '',
-    '## O caminho do arquivo',
-    '',
-    '~~~mermaid',
-    'flowchart LR',
-    '  A[Arquivo .md] --> B{Tem bloco mermaid?}',
-    '  B -- Não --> C[Texto formatado]',
-    '  B -- Sim --> D[Desenho do diagrama]',
-    '  D --> E[Baixar SVG]',
-    '  D --> F[Baixar PNG]',
-    '~~~',
-    '',
-    'Blocos de código comuns continuam aparecendo como código:',
-    '',
-    '~~~js',
-    'console.log("olá, diagrama");',
-    '~~~',
-    '',
-    '## Quem faz o quê',
-    '',
-    '~~~mermaid',
-    'sequenceDiagram',
-    '  participant P as Pessoa',
-    '  participant L as Leia-me',
-    '  participant M as Mermaid',
-    '  P->>L: Abre um arquivo .md',
-    '  L->>M: Envia o código de cada diagrama',
-    '  M-->>L: Devolve o desenho',
-    '  P->>L: Escolhe SVG ou PNG',
-    '  L-->>P: Entrega o arquivo para salvar',
-    '~~~',
-    '',
-    '## Estados de um diagrama',
-    '',
-    '~~~mermaid',
-    'stateDiagram-v2',
-    '  [*] --> Lendo',
-    '  Lendo --> Desenhado: código válido',
-    '  Lendo --> Erro: sintaxe inválida',
-    '  Erro --> Lendo: corrigir o arquivo',
-    '  Desenhado --> Exportado: baixar',
-    '  Exportado --> [*]',
-    '~~~',
-    '',
-    '## O resto do Markdown também funciona',
-    '',
-    '| Formato | Para que serve | Qualidade |',
-    '| --- | --- | --- |',
-    '| SVG | Editar e ampliar sem perda | Vetorial |',
-    '| PNG | Slides, chats e documentos | Pixels (1x, 2x ou 3x) |',
-    '',
-    '- [x] Títulos, listas e tabelas',
-    '- [x] Citações e blocos de código',
-    '- [ ] O seu próprio arquivo',
-    '',
-    '> Se um diagrama tiver erro de sintaxe, só ele é marcado. O resto do documento continua legível.'
+    "# Como usar o Leia-me",
+    "",
+    "Este é um guia de exemplo, um arquivo Markdown como outro qualquer. Leia, exporte ou feche à vontade.",
+    "",
+    "## Em um minuto",
+    "",
+    "1. Arraste um ou mais arquivos `.md` para a página, ou clique em **Abrir arquivos**.",
+    "2. Cada arquivo vira uma **aba**.",
+    "3. Blocos de código `mermaid` são desenhados como **diagramas**.",
+    "4. Baixe os diagramas, ou o documento inteiro, em **SVG, PNG ou PDF**.",
+    "",
+    "## Abrir arquivos",
+    "",
+    "| Como | O que acontece |",
+    "| --- | --- |",
+    "| Arrastar para a página | Abre todos os arquivos soltos, um por aba |",
+    "| Abrir arquivos | Faz o mesmo, escolhendo no seletor do computador |",
+    "| Colar Markdown | Abre um texto colado e deixa você dar um nome ao arquivo |",
+    "",
+    "São aceitos arquivos `.md`, `.markdown` e `.txt`. Ao abrir de novo um arquivo com o mesmo nome, a aba é atualizada.",
+    "",
+    "## Abas",
+    "",
+    "- Clique numa aba para ler aquele arquivo. Com o teclado, use as setas, **Home** e **End**.",
+    "- Cada aba lembra até onde você leu.",
+    "- O **×** remove o arquivo da pasta guardada no navegador. Logo depois aparece um aviso com **Desfazer**.",
+    "",
+    "## Painel lateral",
+    "",
+    "- **Neste documento**: os títulos do arquivo, para pular direto a uma parte.",
+    "- **Diagramas**: a lista de diagramas do arquivo.",
+    "- **Exportação**: baixa o documento em PDF ou PNG, define o tamanho do PNG e o fundo transparente, e reúne todos os diagramas num `.zip`.",
+    "- **Pasta de arquivos**: escolhe, atualiza ou troca a pasta (veja a seção abaixo).",
+    "",
+    "Em telas pequenas, o painel fica recolhido em **Painel do documento**, logo acima do texto.",
+    "",
+    "## Escolher uma pasta no computador",
+    "",
+    "Disponível no Chrome, no Edge e no Opera. No Firefox e no Safari os arquivos ficam guardados no navegador.",
+    "",
+    "1. Clique em **Escolher pasta**.",
+    "2. Permita que a página edite a pasta.",
+    "3. Os arquivos `.md` dela viram abas.",
+    "",
+    "```mermaid",
+    "flowchart TD",
+    "  A[Você escolhe uma pasta] --> B[Os .md viram abas]",
+    "  B --> C{O que você faz?}",
+    "  C -- Adiciona um arquivo --> D[Ele é salvo na pasta]",
+    "  C -- Edita em outro programa --> E[A aba se atualiza ao voltar]",
+    "  C -- Exporta --> F[O arquivo vai para a subpasta exportados]",
+    "```",
+    "",
+    "Com a pasta conectada:",
+    "",
+    "- Arquivos novos são **salvos na pasta**. Se já existir um com o mesmo nome e conteúdo diferente, o novo ganha um número, como `nome 2.md`. Nada é sobrescrito.",
+    "- As exportações vão para a subpasta **exportados**. Desmarque **Salvar na pasta escolhida** para baixar pelo navegador.",
+    "- O **×** das abas some, para ninguém apagar um arquivo sem querer. Para apagar, use **Apagar da pasta…** no painel lateral.",
+    "- Na próxima visita, o navegador pode pedir permissão de novo. Clique em **Reconectar à pasta**.",
+    "- **Desconectar a pasta** não apaga nada no computador.",
+    "",
+    "## Diagramas",
+    "",
+    "Escreva o diagrama num bloco de código com a linguagem `mermaid`:",
+    "",
+    "````text",
+    "```mermaid",
+    "flowchart LR",
+    "  A[Começo] --> B[Fim]",
+    "```",
+    "````",
+    "",
+    "Cada diagrama desenhado tem uma barra com estes botões:",
+    "",
+    "| Botão | O que faz |",
+    "| --- | --- |",
+    "| Ampliar | Abre o desenho em tela grande |",
+    "| Baixar SVG | Imagem vetorial, boa para editar e ampliar sem perder qualidade |",
+    "| Baixar PNG | Imagem comum, em 1x, 2x ou 3x de tamanho |",
+    "| Baixar PDF | Uma página do tamanho do desenho |",
+    "",
+    "Se um diagrama tiver erro de sintaxe, só ele é marcado, com a mensagem do erro. O resto do arquivo continua legível.",
+    "",
+    "## Exportar o documento inteiro",
+    "",
+    "- **Documento em PDF**: páginas A4 numeradas, com quebras que evitam cortar tabelas e diagramas.",
+    "- **Documento em PNG**: uma imagem única de toda a leitura.",
+    "- O resultado sai sempre no tema claro, mesmo que a página esteja no modo escuro.",
+    "",
+    "## Limites e dicas",
+    "",
+    "- Imagens só aparecem se estiverem embutidas no próprio arquivo. Links para imagens externas ou relativas são avisados e não carregam.",
+    "- Arquivos acima de 5 MB são ignorados ao ler uma pasta.",
+    "- Só os arquivos da pasta principal são lidos, não os das subpastas.",
+    "- O PDF é feito de imagens: o texto não pode ser selecionado.",
+    "- Este guia é só um exemplo. Feche a aba quando não precisar mais dele."
   ].join('\n');
 
   /* ---------- Utilidades ---------- */
@@ -1030,7 +1067,7 @@ dialog[open] { display: flex; flex-direction: column; }
     if (pendingHandle) row += '<button class="btn primary" type="button" data-act="reconnect">Reconectar à pasta ' + esc(pendingHandle.name) + '</button>';
     else if (fsSupported) row += '<button class="btn primary" type="button" data-act="pickdir">Escolher pasta</button>';
     row += '<button class="btn' + (fsSupported ? '' : ' primary') + '" type="button" data-act="open">Escolher arquivos</button>';
-    row += '<button class="btn" type="button" data-act="sample">Ver documento de exemplo</button>';
+    row += '<button class="btn" type="button" data-act="sample">' + (dirHandle && !pendingHandle ? 'Salvar o guia de uso na pasta' : 'Ver o guia de uso') + '</button>';
     doc.innerHTML =
       '<div class="welcome"><div class="dropzone">' +
       '<h1>Abra seus arquivos Markdown</h1>' +
@@ -1298,7 +1335,7 @@ dialog[open] { display: flex; flex-direction: column; }
     opts = opts || {};
     await hasWrite(handle, true);
     var prev = tabById(activeId), prevName = opts.activeName || (prev ? prev.name : null);
-    var mem = tabs.filter(function (t) { return !t.handle && !(t.name === 'exemplo-leia-me.md' && t.text === SAMPLE); });
+    var mem = tabs.filter(function (t) { return !t.handle && t.text !== SAMPLE; });
     var disk = await readDir(handle);
     dirHandle = handle; pendingHandle = null;
     tabs = disk.map(function (d, i) {
@@ -1647,7 +1684,7 @@ dialog[open] { display: flex; flex-direction: column; }
   async function init() {
     showWelcome();
     updateFolderInfo();
-    var activeName = null, handle = null;
+    var activeName = null, handle = null, seen = false;
     try {
       var rows = await DB.all();
       rows.sort(function (a, b) { return a.order - b.order; });
@@ -1655,6 +1692,8 @@ dialog[open] { display: flex; flex-direction: column; }
       orderSeq = tabs.reduce(function (m, t) { return Math.max(m, t.order); }, 0);
       var am = await DB.getMeta('active');
       activeName = am && am.value ? am.value : null;
+      var sm = await DB.getMeta('seen');
+      seen = !!(sm && sm.value);
       if (fsSupported) { var dm = await DB.getMeta('dir'); handle = dm && dm.value ? dm.value : null; }
     } catch (e) { persistOk = false; }
     if (handle) {
@@ -1669,6 +1708,9 @@ dialog[open] { display: flex; flex-direction: column; }
     if (tabs.length) {
       var want = tabs.filter(function (t) { return t.name === activeName || t.id === activeName; })[0] || tabs[0];
       await activate(want.id);
+    } else if (!seen && !pendingHandle) {
+      if (persistOk) DB.setMeta('seen', true).catch(function () {});
+      await addTexts([{ name: 'LEIA-ME.md', text: SAMPLE }]);
     } else showWelcome();
     updateFolderInfo();
   }
@@ -1681,7 +1723,7 @@ dialog[open] { display: flex; flex-direction: column; }
       if (act === 'open') return pick();
       if (act === 'pickdir') return pickDir();
       if (act === 'reconnect') return reconnect();
-      if (act === 'sample') return addTexts([{ name: 'exemplo-leia-me.md', text: SAMPLE }]);
+      if (act === 'sample') return addTexts([{ name: 'LEIA-ME.md', text: SAMPLE }]);
       var fig = btn.closest('figure.diagram');
       var d = fig && diagrams.filter(function (x) { return x.n === parseInt(fig.dataset.n, 10); })[0];
       if (!d) return;
