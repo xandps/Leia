@@ -118,6 +118,7 @@ button, select, textarea, input { font: inherit; color: inherit; }
   padding: 8px clamp(16px, 3vw, 28px) 56px;
   align-items: start;
 }
+.layout > * { min-width: 0; }
 .layout.solo { grid-template-columns: minmax(0, 1fr); }
 .layout.solo .paper { max-width: 820px; margin: 0 auto; width: 100%; }
 
@@ -126,9 +127,27 @@ button, select, textarea, input { font: inherit; color: inherit; }
   position: sticky;
   top: calc(env(safe-area-inset-top, 0px) + 124px);
   max-height: calc(100vh - 144px);
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
   padding: 2px 4px 2px 0;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) color-mix(in srgb, var(--line) 35%, transparent);
 }
+#panel, .side-sec, .side-sec nav, .field, .stack { min-width: 0; max-width: 100%; }
+.fileinfo { min-width: 0; overflow-wrap: anywhere; }
+.side-sec nav a { min-width: 0; overflow-wrap: anywhere; }
+.btn.wide { min-width: 0; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.check { min-width: 0; align-items: flex-start; }
+.check input { flex: none; }
+#side::-webkit-scrollbar { width: 10px; height: 10px; }
+#side::-webkit-scrollbar-track { background: color-mix(in srgb, var(--line) 35%, transparent); border-radius: 999px; }
+#side::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 70%, var(--line)); border: 2px solid var(--paper); border-radius: 999px; }
+#side::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+#side::-webkit-scrollbar-corner { background: transparent; }
 #panel > summary {
   list-style: none; cursor: pointer;
   font-weight: 600; padding: 10px 14px;
@@ -155,15 +174,31 @@ button, select, textarea, input { font: inherit; color: inherit; }
 .field label { font-weight: 600; }
 .field select, .field input[type="text"] {
   padding: 8px 10px; border-radius: 10px; border: 1.5px solid var(--line);
-  background: var(--paper); width: 100%;
+  background: var(--paper); width: 90%;
 }
 .check { display: flex; gap: 8px; align-items: center; font-size: 14px; margin-bottom: 14px; cursor: pointer; }
 .check input { width: 18px; height: 18px; accent-color: var(--plum); }
 .hint { font-size: 12.5px; color: var(--ink-soft); margin: 8px 0 12px; }
 .stack { display: grid; gap: 8px; margin-bottom: 8px; }
-.btn.wide { width: 100%; }
+.btn.wide { width: 90%; }
 
 /* ---------- Abas ---------- */
+.groupsbar { display: flex; align-items: center; gap: 10px; max-width: 1200px; margin: 0 auto; padding: 4px clamp(16px, 3vw, 28px) 8px; min-width: 0; }
+.groups-label { flex: none; color: var(--ink-soft); font-size: 13px; font-weight: 700; }
+.groups { display: flex; flex: 1; gap: 6px; min-width: 0; overflow-x: auto; padding: 2px; scrollbar-width: thin; scrollbar-color: var(--accent) color-mix(in srgb, var(--line) 35%, transparent); }
+.group-pill { display: inline-flex; align-items: center; flex: none; gap: 2px; border: 1px solid var(--line); border-radius: 999px; background: color-mix(in srgb, var(--paper) 55%, transparent); }
+.group-filter { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 0; border-radius: 999px; color: var(--ink-soft); background: transparent; cursor: pointer; font-size: 13px; white-space: nowrap; }
+.group-filter[aria-pressed="true"] { background: var(--tint); color: var(--accent); font-weight: 700; }
+.group-count { color: var(--ink-soft); font-size: 11px; }
+.group-action { width: 25px; height: 25px; border: 0; border-radius: 50%; color: var(--ink-soft); background: transparent; cursor: pointer; }
+.group-action:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.group-icon { display: inline-flex; width: 14px; height: 12px; color: var(--accent); }
+.group-icon svg, .group-action svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.7; }
+.tabs-empty { align-self: center; padding: 8px 12px; color: var(--ink-soft); font-size: 13px; }
+.groups::-webkit-scrollbar { height: 8px; }
+.groups::-webkit-scrollbar-track { background: color-mix(in srgb, var(--line) 35%, transparent); border-radius: 999px; }
+.groups::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 70%, var(--line)); border: 2px solid var(--paper); border-radius: 999px; }
+.groups::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 .tabsbar { display: flex; align-items: flex-end; gap: 10px; max-width: 1200px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 28px) 10px; }
 .tabs { position: relative; display: flex; gap: 6px; flex: 1; min-width: 0; overflow-x: auto; padding: 2px 2px 4px; scrollbar-width: thin; }
 .tab {
@@ -173,7 +208,7 @@ button, select, textarea, input { font: inherit; color: inherit; }
 }
 .tab.active { background: var(--paper); border-color: var(--accent); }
 .tab-main {
-  display: block; min-width: 0; max-width: 220px; padding: 7px 4px 7px 14px;
+  display: block; min-width: 0; max-width: 220px; padding: 7px 14px 7px 14px;
   background: none; border: 0; cursor: pointer; text-align: left;
   font-size: 14px; font-weight: 500; color: var(--ink);
 }
@@ -304,6 +339,37 @@ dialog[open] { display: flex; flex-direction: column; }
   border: 1.5px solid var(--line); border-radius: 12px; background: var(--paper);
   font-family: var(--mono); font-size: 14px; line-height: 1.55;
 }
+.edit-dialog { width: min(1200px, 96vw); height: min(88vh, 900px); }
+.edit-dialog .edit-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; flex: 1; min-height: 0; padding: 16px; overflow: hidden; }
+.edit-pane { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
+.edit-pane h3 { margin: 0; color: var(--accent); font: 700 14px var(--ui); }
+.edit-pane textarea, .diff-view { flex: 1; min-height: 0; height: auto; margin: 0; overflow: auto; border: 1.5px solid var(--line); border-radius: 12px; background: var(--paper); color: var(--ink); }
+.edit-pane textarea { width: 100%; resize: none; padding: 14px; font: 14px/1.55 var(--mono); tab-size: 2; }
+.diff-view { padding: 10px 0; font: 12px/1.6 var(--mono); white-space: pre; scrollbar-width: thin; scrollbar-color: var(--accent) color-mix(in srgb, var(--line) 35%, transparent); }
+.diff-line { display: block; min-width: max-content; padding: 0 12px; }
+.diff-line.add { background: color-mix(in srgb, #2f9e62 16%, var(--paper)); color: var(--ink); }
+.diff-line.remove { background: color-mix(in srgb, #d04a56 16%, var(--paper)); color: var(--ink); }
+.diff-summary { min-height: 1.4em; margin: 0; color: var(--ink-soft); font: 13px var(--ui); }
+.diff-view::-webkit-scrollbar { width: 9px; height: 9px; }
+.diff-view::-webkit-scrollbar-track { background: color-mix(in srgb, var(--line) 35%, transparent); border-radius: 999px; }
+.diff-view::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 70%, var(--line)); border: 2px solid var(--paper); border-radius: 999px; }
+.diff-view::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.markdown-dialog { width: min(900px, 96vw); height: min(88vh, 850px); }
+.markdown-search { padding: 14px 18px 0; }
+.markdown-search input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--paper); }
+.markdown-help-body { flex: 1; min-height: 0; padding: 14px 18px 18px; overflow: auto; }
+.markdown-list { display: grid; gap: 10px; }
+.markdown-item { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--paper) 75%, transparent); }
+.markdown-item h3 { margin: 0 0 4px; color: var(--accent); font-size: 15px; }
+.markdown-item p { margin: 0 0 8px; color: var(--ink-soft); font-size: 13px; }
+.markdown-item pre { overflow-x: auto; margin: 0; padding: 9px 10px; border-radius: 8px; background: var(--tint); font: 13px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.markdown-item .btn { margin-top: 8px; }
+.markdown-empty { padding: 28px 12px; text-align: center; color: var(--ink-soft); }
+kbd { padding: 2px 5px; border: 1px solid currentColor; border-radius: 5px; font: 11px var(--mono); opacity: .8; }
+@media (max-width: 760px) {
+  .edit-dialog { height: min(92vh, 1000px); }
+  .edit-dialog .edit-body { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(180px, 1fr) minmax(180px, 1fr); }
+}
 .dlg-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 18px 16px; }
 #zoomBody { background: #FFFDFE; border-radius: 12px; display: flex; justify-content: center; padding: 16px; margin: 18px; overflow: auto; }
 #zoomBody img { max-width: 100%; height: auto; }
@@ -324,13 +390,16 @@ dialog[open] { display: flex; flex-direction: column; }
 /* ---------- Telas estreitas ---------- */
 @media (max-width: 900px) {
   .layout { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  #side { position: static; max-height: none; overflow: visible; padding: 0; }
+  #side { position: static; max-height: none; overflow-x: hidden; overflow-y: visible; padding: 0; }
+  #panel { width: 100%; }
   #panel[open] > summary { margin-bottom: 12px; }
   .layout:not(.solo) .doc > :not(.diagram):not(.tablewrap):not(pre) { max-width: none; }
 }
 @media (max-width: 520px) {
   .brand { font-size: 20px; }
   .actions .btn { padding: 8px 12px; }
+  .groupsbar { flex-wrap: wrap; gap: 6px; }
+  .groups { order: 3; flex-basis: 100%; }
   .diagram .bar { flex-direction: column; align-items: flex-start; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -353,11 +422,18 @@ dialog[open] { display: flex; flex-direction: column; }
     <span>Leia-me</span>
   </div>
   <div class="actions">
+    <button class="btn" id="btnNewDoc" type="button">Novo .md</button>
+    <button class="btn" id="btnMarkdownHelp" type="button" title="Atalho: Ctrl+Alt+M">Markdown <kbd>Ctrl+Alt+M</kbd></button>
     <button class="btn" id="btnPaste" type="button">Colar Markdown</button>
     <button class="btn" id="btnDir" type="button" hidden>Escolher pasta</button>
     <button class="btn primary" id="btnOpen" type="button">Abrir arquivos</button>
   </div>
 </header>
+  <div class="groupsbar" id="groupsbar" hidden>
+    <span class="groups-label">Pastas</span>
+    <div class="groups" id="groups" aria-label="Pastas de documentos"></div>
+    <button class="btn small" id="btnNewGroup" type="button">+ Criar pasta</button>
+  </div>
   <div class="tabsbar" id="tabsbar" hidden>
     <div class="tabs" id="tabs" role="tablist" aria-label="Arquivos da pasta"></div>
     <button class="btn small" id="btnAdd" type="button">+ Adicionar</button>
@@ -369,6 +445,8 @@ dialog[open] { display: flex; flex-direction: column; }
     <details id="panel" open>
       <summary>Painel do documento</summary>
       <div class="fileinfo"><strong id="fname"></strong><span id="fmeta"></span></div>
+      <div class="field" id="docGroupRow" hidden><label for="docGroup">Organizar em pasta</label><select id="docGroup"></select></div>
+      <div id="editRow" hidden style="margin-bottom:12px"><button class="btn small wide primary" id="btnEditFile" type="button">Editar documento</button></div>
       <div id="renameRow" hidden style="margin-bottom:12px"><button class="btn small wide" id="btnRenameFile" type="button">Renomear arquivo</button></div>
       <div id="delRow" hidden style="margin-bottom:12px"><button class="btn small wide" id="btnDelFile" type="button">Apagar da pasta…</button></div>
       <section class="side-sec" id="outlineSec">
@@ -432,6 +510,40 @@ dialog[open] { display: flex; flex-direction: column; }
   <div class="dlg-foot">
     <button class="btn" type="button" id="pasteCancel">Cancelar</button>
     <button class="btn primary" type="button" id="pasteOk">Mostrar documento</button>
+  </div>
+</dialog>
+
+<dialog id="markdownDlg" class="markdown-dialog" aria-labelledby="markdownTitle">
+  <div class="dlg-head"><h2 id="markdownTitle">Comandos e recursos Markdown</h2><button class="btn small" id="markdownClose" type="button">Fechar</button></div>
+  <div class="markdown-search"><input id="markdownSearch" type="search" placeholder="Pesquisar: título, tabela, link, código..." autocomplete="off" aria-label="Pesquisar comandos Markdown"></div>
+  <div class="markdown-help-body"><div class="markdown-list" id="markdownList"></div></div>
+</dialog>
+
+<dialog id="groupDlg" aria-labelledby="groupTitle" style="width:min(480px,94vw)">
+  <div class="dlg-head"><h2 id="groupTitle">Criar pasta</h2></div>
+  <div class="dlg-body"><div class="field"><label for="groupName">Nome da pasta</label><input id="groupName" type="text" maxlength="60" autocomplete="off"></div></div>
+  <div class="dlg-foot">
+    <button class="btn" type="button" id="groupCancel">Cancelar</button>
+    <button class="btn primary" type="button" id="groupSave">Salvar pasta</button>
+  </div>
+</dialog>
+
+<dialog id="editDlg" class="edit-dialog" aria-labelledby="editTitle">
+  <div class="dlg-head"><h2 id="editTitle">Editar documento</h2></div>
+  <div class="edit-body">
+    <section class="edit-pane">
+      <h3>Texto Markdown</h3>
+      <textarea id="editorText" spellcheck="false" autocomplete="off" aria-label="Texto Markdown editável"></textarea>
+    </section>
+    <section class="edit-pane">
+      <h3>Comparação com o original</h3>
+      <p class="diff-summary" id="diffSummary" aria-live="polite"></p>
+      <pre class="diff-view" id="diffView" aria-label="Diferenças do texto"><code></code></pre>
+    </section>
+  </div>
+  <div class="dlg-foot">
+    <button class="btn" type="button" id="editCancel">Cancelar</button>
+    <button class="btn primary" type="button" id="editSave" disabled>Salvar alterações</button>
   </div>
 </dialog>
 
@@ -1099,6 +1211,7 @@ dialog[open] { display: flex; flex-direction: column; }
     $('#diagSec').hidden = true; $('#diagOpts').hidden = true;
     $('#diagList').innerHTML = '';
     side.hidden = false; layout.classList.remove('solo');
+    updateDocGroup();
     updateFolderInfo();
   }
   function fillDiagrams() {
@@ -1211,6 +1324,8 @@ dialog[open] { display: flex; flex-direction: column; }
 
   /* ---------- Pasta no computador e pasta guardada no navegador ---------- */
   var tabs = [], activeId = null, orderSeq = 0, persistOk = true, lastRemoved = null, lastDeleted = null;
+  var groups = [], folderAssignments = {}, activeGroupFilter = 'all', editingGroupId = null;
+  var editorTabId = null, editorOriginal = '', editorBaseText = '';
   var dirHandle = null, pendingHandle = null;
   var fsSupported = typeof window.showDirectoryPicker === 'function';
   var TEXT_RE = /\.(md|markdown|mdown|txt)$/i, MAX_BYTES = 5 * 1024 * 1024;
@@ -1255,6 +1370,30 @@ dialog[open] { display: flex; flex-direction: column; }
 
   function newId() { return 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
   function tabById(id) { return tabs.filter(function (t) { return t.id === id; })[0]; }
+  function groupIdFor(t) { return t.groupId || (dirHandle ? (folderAssignments[t.name] || '') : ''); }
+  function tabKey(t) { return (t.groupId || '') + '::' + t.name; }
+  function groupDirName(id) { var g = groups.filter(function (x) { return x.id === id; })[0]; return g ? (g.dirName || g.name) : ''; }
+  async function groupDirectory(id, create) {
+    if (!id) return dirHandle;
+    var name = groupDirName(id);
+    if (!name || !dirHandle) return dirHandle;
+    var g = groups.filter(function (x) { return x.id === id; })[0], base = name, n = 2;
+    for (;;) {
+      try { return await dirHandle.getDirectoryHandle(name); }
+      catch (e) {
+        var fileExists = false;
+        try { await dirHandle.getFileHandle(name); fileExists = true; } catch (ignored) {}
+        if (fileExists) { name = base + ' (' + n++ + ')'; if (g) g.dirName = name; continue; }
+        if (create) return await dirHandle.getDirectoryHandle(name, { create: true });
+        throw e;
+      }
+    }
+  }
+  function saveGroupData() {
+    if (!persistOk) return;
+    DB.setMeta('groups', groups.map(function (g) { return { id: g.id, name: g.name, dirName: g.dirName || g.name }; })).catch(failPersist);
+    DB.setMeta('folderAssignments', folderAssignments).catch(failPersist);
+  }
   function isReadme(t) { return !!t && t.pinned === true; }
   function sortTabs() {
     if (dirHandle) tabs.sort(function (a, b) { return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }); });
@@ -1262,11 +1401,11 @@ dialog[open] { display: flex; flex-direction: column; }
   function failPersist() { persistOk = false; updateFolderInfo(); }
   function persistTab(t) {
     if (!persistOk || dirHandle) return;
-    DB.put({ id: t.id, name: t.name, text: t.text, size: t.size, order: t.order, pinned: !!t.pinned, guide: !!t.guide, sourceRoot: !!t.sourceRoot }).catch(failPersist);
+    DB.put({ id: t.id, name: t.name, text: t.text, size: t.size, order: t.order, pinned: !!t.pinned, guide: !!t.guide, sourceRoot: !!t.sourceRoot, groupId: t.groupId || '' }).catch(failPersist);
   }
   function persistActive() {
     var t = tabById(activeId);
-    if (persistOk) DB.setMeta('active', t ? t.name : null).catch(failPersist);
+    if (persistOk) DB.setMeta('active', t ? tabKey(t) : null).catch(failPersist);
   }
 
   function updateFolderInfo() {
@@ -1278,7 +1417,7 @@ dialog[open] { display: flex; flex-direction: column; }
     nameEl.hidden = !(connected || pend);
     nameEl.textContent = connected ? 'Pasta no computador: ' + dirHandle.name : (pend ? 'Pasta anterior: ' + pendingHandle.name : '');
     var hint;
-    if (connected) hint = 'Os arquivos .md desta pasta aparecem como abas. O que você adicionar é salvo nela.';
+    if (connected) hint = 'Os arquivos .md aparecem como abas. As pastas e movimentações no site também são aplicadas nesta pasta do computador.';
     else if (pend) hint = 'O navegador pede uma nova permissão para voltar a usar a pasta.';
     else if (!fsSupported) hint = 'Este navegador não permite escolher uma pasta (use Chrome ou Edge). Os arquivos ficam guardados no navegador.';
     else if (!persistOk) hint = 'Não foi possível guardar os arquivos neste navegador. Eles ficam só enquanto a página estiver aberta.';
@@ -1291,6 +1430,7 @@ dialog[open] { display: flex; flex-direction: column; }
     $('#btnDropDir').hidden = !(connected || pend);
     $('#saveToFolderRow').hidden = !connected;
     var activeTab = tabById(activeId);
+    $('#editRow').hidden = !activeTab || !!activeTab.guide;
     $('#renameRow').hidden = !activeTab || isReadme(activeTab);
     $('#delRow').hidden = !(connected && activeTab && !isReadme(activeTab));
     $('#btnFolderZip').disabled = !n;
@@ -1307,21 +1447,32 @@ dialog[open] { display: flex; flex-direction: column; }
     if (ask && await handle.requestPermission(o) === 'granted') return true;
     throw new Error('sem permissão');
   }
-  async function readDir(handle) {
+  async function readDir(handle, groupId) {
     var out = [], big = 0;
     for await (var entry of handle.values()) {
       if (entry.kind !== 'file' || entry.name.charAt(0) === '.' || !TEXT_RE.test(entry.name)) continue;
       try {
         var f = await entry.getFile();
         if (f.size > MAX_BYTES) { big++; continue; }
-        out.push({ name: entry.name, handle: entry, text: await f.text(), size: f.size, mtime: f.lastModified });
+        out.push({ name: entry.name, handle: entry, directoryHandle: handle, groupId: groupId || '', text: await f.text(), size: f.size, mtime: f.lastModified });
       } catch (e) { /* arquivo ilegível: ignora */ }
     }
     out.big = big;
     return out;
   }
-  async function writeText(name, text) {
-    var fh = await dirHandle.getFileHandle(name, { create: true });
+  async function scanFolder() {
+    var out = await readDir(dirHandle, ''), big = out.big || 0;
+    for (var i = 0; i < groups.length; i++) {
+      var g = groups[i], sub;
+      try { sub = await dirHandle.getDirectoryHandle(g.dirName || g.name); } catch (e) { continue; }
+      var docs = await readDir(sub, g.id); big += docs.big || 0;
+      Array.prototype.push.apply(out, docs);
+    }
+    out.big = big;
+    return out;
+  }
+  async function writeText(name, text, targetDir) {
+    var fh = await (targetDir || dirHandle).getFileHandle(name, { create: true });
     var w = await fh.createWritable();
     await w.write(text); await w.close();
     var f = await fh.getFile();
@@ -1337,53 +1488,59 @@ dialog[open] { display: flex; flex-direction: column; }
     while (tabs.some(function (t) { return t.id !== exceptId && t.name.toLowerCase() === n.toLowerCase(); })) n = stem + ' (' + (k++) + ')' + ext;
     return n;
   }
-  async function uniqueFolderName(base, exceptId) {
+  async function uniqueFolderName(base, exceptId, targetDir, groupId) {
     var m = /^(.*?)(\.[^.]+)?$/.exec(base), stem = m[1], ext = m[2] || '';
     for (var k = 1; ; k++) {
       var n = k === 1 ? base : stem + ' (' + k + ')' + ext;
-      var exists = tabs.some(function (t) { return t.id !== exceptId && t.name.toLowerCase() === n.toLowerCase(); });
-      if (!exists && dirHandle) { try { await dirHandle.getFileHandle(n); exists = true; } catch (e) { exists = false; } }
+      var exists = tabs.some(function (t) { return t.id !== exceptId && (t.groupId || '') === (groupId || '') && t.name.toLowerCase() === n.toLowerCase(); });
+      if (!exists && targetDir) { try { await targetDir.getFileHandle(n); exists = true; } catch (e) { exists = false; } }
       if (!exists) return n;
     }
   }
   /* Nunca sobrescreve um arquivo da pasta: nome repetido com conteúdo diferente vira "nome 2.md" */
   async function folderAdd(it) {
-    var name = await uniqueFolderName(it.name, null);
+    var targetDir = it.groupId ? await groupDirectory(it.groupId, true) : dirHandle;
+    var name = await uniqueFolderName(it.name, null, targetDir, it.groupId || '');
     var duplicate = name.toLowerCase() !== it.name.toLowerCase();
-    var w = await writeText(name, it.text);
-    var t = { id: newId(), name: name, text: it.text, size: w.size, mtime: w.mtime, handle: w.handle, pinned: !!it.pinned, order: ++orderSeq, cache: null, scroll: 0 };
+    var w = await writeText(name, it.text, targetDir);
+    var t = { id: newId(), name: name, text: it.text, size: w.size, mtime: w.mtime, handle: w.handle, directoryHandle: targetDir, pinned: !!it.pinned, groupId: it.groupId || '', order: ++orderSeq, cache: null, scroll: 0 };
     tabs.push(t); sortTabs();
+    if (t.groupId) { folderAssignments[name] = t.groupId; saveGroupData(); }
     return { tab: t, renamedFrom: duplicate ? it.name : null };
   }
 
   async function connectFolder(handle, opts) {
     opts = opts || {};
     await hasWrite(handle, true);
-    var prev = tabById(activeId), prevName = opts.activeName || (prev ? prev.name : null);
+    var prev = tabById(activeId), prevName = opts.activeName || (prev ? tabKey(prev) : null);
     var mem = tabs.filter(function (t) { return !t.handle && !t.sourceRoot && t.text !== SAMPLE; });
-    var disk = await readDir(handle);
     dirHandle = handle; pendingHandle = null;
-    tabs = disk.map(function (d, i) {
-      return { id: newId(), name: d.name, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, pinned: false, order: i + 1, cache: null, scroll: 0 };
-    });
+    for (var gi = 0; gi < groups.length; gi++) await groupDirectory(groups[gi].id, true);
+    var disk = await scanFolder();
+    tabs = disk.map(function (d, i) { return { id: newId(), name: d.name, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, directoryHandle: d.directoryHandle, pinned: false, groupId: d.groupId || folderAssignments[d.name] || '', order: i + 1, cache: null, scroll: 0 }; });
     orderSeq = tabs.length;
+    for (var mi = 0; mi < tabs.length; mi++) {
+      var mt = tabs[mi];
+      if (mt.groupId && mt.directoryHandle === dirHandle && folderAssignments[mt.name] === mt.groupId) await moveTabToGroup(mt, mt.groupId);
+    }
     sortTabs();
     ensureGuideTab();
     var copied = 0, renamed = 0;
     for (var i = 0; i < mem.length; i++) {
-      var r = await folderAdd({ name: mem[i].name, text: mem[i].text });
+      var r = await folderAdd({ name: mem[i].name, text: mem[i].text, groupId: mem[i].groupId || '' });
       if (!r.same) { copied++; if (r.renamedFrom) renamed++; }
     }
     if (persistOk) {
       DB.setMeta('dir', handle).catch(function () {});
       DB.clearFiles().catch(function () {});
     }
-    var keep = tabs.filter(function (t) { return t.name === prevName; })[0] || tabs[0] || null;
+    var keep = tabs.filter(function (t) { return tabKey(t) === prevName || t.name === prevName; })[0] || tabs[0] || null;
     if (keep) await activate(keep.id);
     else { activeId = null; renderTabs(); showWelcome(); }
     updateFolderInfo();
     if (opts.silent) return;
-    var msg = 'Pasta conectada: ' + handle.name + '. ' + (tabs.length ? tabs.length + (tabs.length === 1 ? ' arquivo aberto' : ' arquivos abertos') : 'Nenhum arquivo .md por aqui ainda: adicione alguns');
+    var folderFiles = tabs.filter(function (t) { return !t.virtual; });
+    var msg = 'Pasta conectada: ' + handle.name + '. ' + (folderFiles.length ? folderFiles.length + (folderFiles.length === 1 ? ' arquivo aberto' : ' arquivos abertos') : 'Nenhum arquivo .md por aqui ainda: adicione alguns');
     if (copied) msg += '. ' + copied + (copied === 1 ? ' arquivo do navegador foi copiado' : ' arquivos do navegador foram copiados') + ' para a pasta';
     if (disk.big) msg += '. ' + disk.big + ' acima de 5 MB ignorado(s)';
     toast(msg + '.');
@@ -1430,23 +1587,25 @@ dialog[open] { display: flex; flex-direction: column; }
         if (manual) toast('A permissão da pasta expirou. Use "Reconectar à pasta".');
         return;
       }
-      var disk = await readDir(dirHandle), byName = {};
-      disk.forEach(function (d) { byName[d.name] = d; });
+      var disk = await scanFolder(), byName = {};
+      disk.forEach(function (d) { byName[(d.groupId || '') + '::' + d.name] = d; });
       var changed = false, activeGone = false, activeChanged = false;
       tabs = tabs.filter(function (t) {
         if (t.virtual) return true;
-        var d = byName[t.name];
+        var d = byName[tabKey(t)];
         if (!d) { changed = true; if (t.id === activeId) activeGone = true; return false; }
+        t.groupId = d.groupId || t.groupId || folderAssignments[t.name] || '';
+        t.directoryHandle = d.directoryHandle;
         if (d.mtime !== t.mtime || d.size !== t.size) {
           t.text = d.text; t.size = d.size; t.mtime = d.mtime; t.handle = d.handle; t.cache = null;
           changed = true; if (t.id === activeId) activeChanged = true;
         }
-        delete byName[t.name];
+        delete byName[tabKey(t)];
         return true;
       });
       Object.keys(byName).forEach(function (n) {
         var d = byName[n]; changed = true;
-        tabs.push({ id: newId(), name: n, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, pinned: false, order: ++orderSeq, cache: null, scroll: 0 });
+        tabs.push({ id: newId(), name: d.name, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, directoryHandle: d.directoryHandle, pinned: false, groupId: d.groupId || '', order: ++orderSeq, cache: null, scroll: 0 });
       });
       sortTabs();
       if (changed) {
@@ -1473,11 +1632,59 @@ dialog[open] { display: flex; flex-direction: column; }
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') scheduleSync(); });
 
   /* ---------- Abas ---------- */
+  function visibleTabs() {
+    return tabs.filter(function (t) {
+      if (activeGroupFilter === 'all') return true;
+      if (activeGroupFilter === 'none') return t.guide || !groupIdFor(t);
+      return !t.guide && groupIdFor(t) === activeGroupFilter;
+    });
+  }
+  function renderGroups() {
+    var bar = $('#groupsbar'), box = $('#groups');
+    bar.hidden = tabs.length === 0;
+    box.innerHTML = '';
+    function addFilter(id, label, count, editable) {
+      var pill = el('div', 'group-pill');
+      var filter = el('button', 'group-filter');
+      filter.type = 'button'; filter.dataset.groupFilter = id;
+      filter.setAttribute('aria-pressed', activeGroupFilter === id ? 'true' : 'false');
+      var icon = el('span', 'group-icon'); icon.setAttribute('aria-hidden', 'true'); icon.innerHTML = '<svg viewBox="0 0 16 13" aria-hidden="true"><path d="M1.5 3.5h5l1.5 1.5h6.5v6.5h-13z"/><path d="M1.5 3.5v-2h4.5l1.5 2"/></svg>';
+      var name = el('span'); name.textContent = label;
+      var badge = el('span', 'group-count'); badge.textContent = count;
+      filter.appendChild(icon); filter.appendChild(name); filter.appendChild(badge); pill.appendChild(filter);
+      if (editable) {
+        var edit = el('button', 'group-action'); edit.type = 'button'; edit.dataset.editGroup = id; edit.innerHTML = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 10.5 10.5 2l1.5 1.5-8.5 8.5L1 12z"/><path d="m8.5 4 1.5 1.5"/></svg>'; edit.title = 'Renomear pasta'; edit.setAttribute('aria-label', 'Renomear ' + label);
+        var del = el('button', 'group-action'); del.type = 'button'; del.dataset.deleteGroup = id; del.innerHTML = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="m3 3 8 8M11 3l-8 8"/></svg>'; del.title = 'Excluir pasta'; del.setAttribute('aria-label', 'Excluir ' + label);
+        pill.appendChild(edit); pill.appendChild(del);
+      }
+      box.appendChild(pill);
+    }
+    addFilter('all', 'Todos', tabs.filter(function (t) { return !t.guide; }).length, false);
+    addFilter('none', 'Sem pasta', tabs.filter(function (t) { return !t.guide && !groupIdFor(t); }).length, false);
+    groups.forEach(function (g) {
+      var count = tabs.filter(function (t) { return !t.guide && groupIdFor(t) === g.id; }).length;
+      addFilter(g.id, g.name, count, true);
+    });
+  }
+  function updateDocGroup() {
+    var t = tabById(activeId), row = $('#docGroupRow'), select = $('#docGroup');
+    row.hidden = !t || !!t.guide;
+    if (!t || t.guide) return;
+    select.innerHTML = '';
+    var none = el('option'); none.value = ''; none.textContent = 'Sem pasta'; select.appendChild(none);
+    groups.forEach(function (g) { var o = el('option'); o.value = g.id; o.textContent = g.name; select.appendChild(o); });
+    select.value = groupIdFor(t);
+  }
   function renderTabs() {
     var bar = $('#tabsbar'), box = $('#tabs');
     bar.hidden = tabs.length === 0;
+    renderGroups();
     box.innerHTML = '';
-    tabs.forEach(function (t) {
+    var shownTabs = visibleTabs();
+    if (!shownTabs.length) {
+      var empty = el('span', 'tabs-empty'); empty.textContent = 'Esta pasta ainda não tem documentos.'; box.appendChild(empty);
+    }
+    shownTabs.forEach(function (t) {
       var on = t.id === activeId;
       var wrap = el('div', 'tab' + (on ? ' active' : '') + (dirHandle ? ' nox' : ''));
       var b = el('button', 'tab-main');
@@ -1528,12 +1735,67 @@ dialog[open] { display: flex; flex-direction: column; }
   }
 
   /* ---------- Adicionar, remover e apagar ---------- */
-  function upsert(name, text, size, pinned) {
+  function upsert(name, text, size, pinned, groupId) {
     if (tabs.some(function (x) { return x.name.toLowerCase() === name.toLowerCase(); })) name = uniqueName(name);
-    var t = { id: newId(), name: name, text: text, size: size, pinned: !!pinned, order: ++orderSeq, cache: null, scroll: 0 };
+    var t = { id: newId(), name: name, text: text, size: size, pinned: !!pinned, groupId: groupId || '', order: ++orderSeq, cache: null, scroll: 0 };
     tabs.push(t);
     persistTab(t);
     return { tab: t, replaced: false };
+  }
+  var MARKDOWN_HELP = [
+    ['Títulos nível 1', 'Título principal do documento.', '# Título', 'título h1 heading principal'],
+    ['Títulos nível 2', 'Subtítulo de uma seção.', '## Título nível 2', 'título h2 seção'],
+    ['Títulos nível 3', 'Subseção.', '### Título nível 3', 'título h3 subseção'],
+    ['Títulos nível 4', 'Seção de quarto nível.', '#### Título nível 4', 'título h4'],
+    ['Títulos nível 5', 'Seção de quinto nível.', '##### Título nível 5', 'título h5'],
+    ['Títulos nível 6', 'Seção de sexto nível.', '###### Título nível 6', 'título h6'],
+    ['Parágrafo e quebra de linha', 'Separe parágrafos com uma linha vazia. Termine uma linha com dois espaços para quebrar sem iniciar outro parágrafo.', 'Primeiro parágrafo.\n\nSegundo parágrafo.\nQuebra de linha  ', 'texto parágrafo linha'],
+    ['Negrito', 'Destaque um trecho em negrito.', '**texto em negrito**', 'forte bold destaque'],
+    ['Itálico', 'Destaque um trecho em itálico.', '*texto em itálico*', 'ênfase italic'],
+    ['Negrito e itálico', 'Combine os dois estilos.', '***negrito e itálico***', 'ênfase bold'],
+    ['Tachado', 'Mostra o texto riscado (extensão GFM).', '~~texto removido~~', 'riscado strikethrough'],
+    ['Citação', 'Cria um bloco de citação. Use mais sinais > para citações aninhadas.', '> Uma citação\n>> Citação dentro de citação', 'blockquote recuo'],
+    ['Lista não ordenada', 'Use -, * ou + para itens sem ordem.', '- Primeiro item\n- Segundo item\n  - Subitem', 'lista bullet marcadores'],
+    ['Lista ordenada', 'Numere os itens; o renderizador organiza a sequência.', '1. Primeiro passo\n2. Segundo passo', 'lista numerada ordered'],
+    ['Lista de tarefas', 'Caixas marcáveis (extensão GFM).', '- [ ] Pendente\n- [x] Concluída', 'checklist checkbox tarefa'],
+    ['Código em linha', 'Use crases para destacar código dentro do parágrafo.', 'Use `npm install` no terminal.', 'inline code crase'],
+    ['Bloco de código', 'Use três crases e, opcionalmente, o nome da linguagem.', '```js\nconst mensagem = "Olá";\nconsole.log(mensagem);\n```', 'código code fence bloco javascript'],
+    ['Diagrama Mermaid', 'Bloco especial reconhecido pelo Leia-me para renderizar diagramas.', '```mermaid\nflowchart TD\n  A[Início] --> B[Fim]\n```', 'mermaid diagrama fluxo gráfico'],
+    ['Linha horizontal', 'Separe seções com três hífens.', '---', 'hr separador divisor'],
+    ['Link', 'Crie um link com texto visível e endereço.', '[Abrir o site](https://exemplo.com)', 'url hyperlink endereço'],
+    ['Link com título', 'O texto entre aspas aparece como dica ao passar o mouse.', '[Abrir o site](https://exemplo.com "Título do link")', 'url hyperlink title dica'],
+    ['Imagem', 'Inclua texto alternativo entre colchetes e o endereço da imagem entre parênteses.', '![Descrição da imagem](imagens/foto.png)', 'imagem image alt figura'],
+    ['Imagem com título', 'Adicione um título entre aspas após o endereço.', '![Descrição](foto.png "Legenda da imagem")', 'imagem image legenda'],
+    ['Tabela', 'Separe colunas com barras verticais. Os dois pontos alinham o conteúdo.', '| Nome | Status |\n| :--- | :---: |\n| Ana | Feito |\n| Bia | Pendente |', 'tabela table colunas alinhamento'],
+    ['Autolink', 'URLs e endereços de e-mail podem ser reconhecidos automaticamente.', 'https://exemplo.com\ncontato@exemplo.com', 'url email link automático'],
+    ['Escapar caracteres', 'Use barra invertida para exibir um caractere que normalmente teria função Markdown.', '\\*Isto não fica em itálico\\*', 'escape barra invertida literal'],
+    ['HTML', 'O Markdown também aceita HTML em linha; conteúdo inseguro é sanitizado antes da exibição.', '<details>\n  <summary>Ver mais</summary>\n  Conteúdo adicional.\n</details>', 'html detalhes summary'],
+    ['Lista de definições', 'Escreva o termo e, na linha seguinte, sua definição.', 'Markdown\n: Formato de texto com marcação leve.', 'definição termo description'],
+    ['Referência de link', 'Defina o endereço separado do texto para reutilizá-lo.', '[Documentação][docs]\n\n[docs]: https://exemplo.com "Documentação"', 'referência link reutilizar'],
+    ['Emoji por texto', 'O renderizador não converte códigos como :smile: automaticamente; você pode inserir o emoji diretamente.', '✨ 😀 🚀', 'emoji símbolo ícone'],
+    ['Imagem local', 'Caminhos relativos funcionam quando o arquivo de imagem acompanha o documento.', '![Diagrama](./imagens/diagrama.png)', 'local caminho relativo imagem'],
+    ['Legenda simples', 'Markdown padrão não tem sintaxe própria para legenda; use um parágrafo logo abaixo da imagem.', '![Paisagem](paisagem.jpg)\n\n*Legenda da imagem*', 'caption legenda imagem'],
+    ['HTML de áudio ou vídeo', 'Para mídia incorporada, use HTML quando a plataforma aceitar esse elemento.', '<video controls src="video.mp4"></video>', 'video áudio audio mídia player']
+  ];
+  function renderMarkdownHelp() {
+    var query = $('#markdownSearch').value.trim().toLocaleLowerCase(), list = $('#markdownList');
+    list.innerHTML = '';
+    var matches = MARKDOWN_HELP.filter(function (item) { return item.slice(0, 4).join(' ').toLocaleLowerCase().indexOf(query) >= 0; });
+    if (!matches.length) { var empty = el('p', 'markdown-empty'); empty.textContent = 'Nenhum comando encontrado. Tente outra palavra.'; list.appendChild(empty); return; }
+    matches.forEach(function (item) {
+      var card = el('article', 'markdown-item'), title = el('h3'), desc = el('p'), code = el('pre'), copy = el('button', 'btn small');
+      title.textContent = item[0]; desc.textContent = item[1]; code.textContent = item[2];
+      copy.type = 'button'; copy.dataset.copyMarkdown = item[2]; copy.textContent = 'Copiar sintaxe';
+      card.appendChild(title); card.appendChild(desc); card.appendChild(code); card.appendChild(copy); list.appendChild(card);
+    });
+  }
+  function openMarkdownHelp() {
+    renderMarkdownHelp(); $('#markdownDlg').showModal(); $('#markdownSearch').focus();
+  }
+  async function createMarkdownDoc() {
+    var name = 'novo-documento.md', groupId = groups.some(function (g) { return g.id === activeGroupFilter; }) ? activeGroupFilter : '';
+    var created = await addTexts([{ name: name, text: '# Novo documento\n\n', groupId: groupId }]);
+    if (created) openEditor();
   }
   function ensureGuideTab() {
     var existing = tabs.filter(function (t) { return t.guide || (t.text === SAMPLE && (!t.handle || t.virtual) && (t.pinned || /^(README|LEIA-ME|Guia de uso)( \(\d+\))?\.md$/i.test(t.name))); })[0];
@@ -1543,6 +1805,174 @@ dialog[open] { display: flex; flex-direction: column; }
     if (!dirHandle) persistTab(t);
     return t;
   }
+  function openGroupDialog(id) {
+    editingGroupId = id || null;
+    var g = groups.filter(function (x) { return x.id === editingGroupId; })[0];
+    $('#groupTitle').textContent = g ? 'Renomear pasta' : 'Criar pasta';
+    $('#groupSave').textContent = g ? 'Salvar nome' : 'Criar pasta';
+    $('#groupName').value = g ? g.name : '';
+    $('#groupDlg').showModal();
+    $('#groupName').focus();
+  }
+  async function saveGroup() {
+    var name = $('#groupName').value.trim();
+    if (!name) { toast('Digite um nome para a pasta.'); return; }
+    var duplicate = groups.some(function (g) { return g.id !== editingGroupId && g.name.toLowerCase() === name.toLowerCase(); });
+    if (duplicate) { toast('Já existe uma pasta com esse nome.'); return; }
+    var g = groups.filter(function (x) { return x.id === editingGroupId; })[0];
+    if (dirHandle) {
+      try {
+        await hasWrite(dirHandle, true);
+        if (!g) {
+          g = { id: newId(), name: name, dirName: name.replace(/[\\/:*?"<>|]+/g, '-').trim() || 'Pasta' };
+          await dirHandle.getDirectoryHandle(g.dirName, { create: true });
+        }
+        else if (g.name !== name) {
+          var oldDir = await groupDirectory(g.id, false), newName = name.replace(/[\\/:*?"<>|]+/g, '-').trim() || 'Pasta';
+          var newDir = await dirHandle.getDirectoryHandle(newName, { create: true });
+          var docs = tabs.filter(function (t) { return t.groupId === g.id; });
+          for (var i = 0; i < docs.length; i++) {
+            var destName = await uniqueFolderName(docs[i].name, docs[i].id, newDir, g.id);
+            var written = await writeText(destName, docs[i].text, newDir);
+            await (docs[i].directoryHandle || oldDir).removeEntry(docs[i].name);
+            docs[i].name = destName; docs[i].handle = written.handle; docs[i].directoryHandle = newDir;
+          }
+          g.dirName = newName;
+        }
+      } catch (e) { toast('Não foi possível criar ou renomear a pasta no computador.'); return; }
+    }
+    if (g) g.name = name;
+    else { g = { id: newId(), name: name, dirName: name.replace(/[\\/:*?"<>|]+/g, '-').trim() || 'Pasta' }; groups.push(g); }
+    if (g && !groups.some(function (x) { return x.id === g.id; })) groups.push(g);
+    if (dirHandle && !g.dirName) g.dirName = name;
+    saveGroupData();
+    $('#groupDlg').close();
+    renderTabs(); updateDocGroup();
+  }
+  async function moveTabToGroup(t, id) {
+    if (!t) return false;
+    if (!dirHandle) { t.groupId = id || ''; persistTab(t); return true; }
+    if (t.virtual) return false;
+    var from = t.directoryHandle || dirHandle, to;
+    try {
+      await hasWrite(dirHandle, true);
+      to = id ? await groupDirectory(id, true) : dirHandle;
+      if (from === to) { t.groupId = id || ''; return true; }
+      var name = await uniqueFolderName(t.name, t.id, to, id || '');
+      var written = await writeText(name, t.text, to);
+      try { await from.removeEntry(t.name); }
+      catch (e) { try { await to.removeEntry(name); } catch (ignored) {} throw e; }
+      t.name = name; t.handle = written.handle; t.directoryHandle = to; t.size = written.size; t.mtime = written.mtime; t.groupId = id || ''; t.cache = null;
+      if (id) folderAssignments[t.name] = id;
+      else delete folderAssignments[t.name];
+      saveGroupData(); persistTab(t);
+      return true;
+    } catch (e) { toast('Não foi possível mover o arquivo para essa pasta.'); return false; }
+  }
+  async function deleteGroup(id) {
+    var g = groups.filter(function (x) { return x.id === id; })[0];
+    if (!g || !window.confirm('Excluir a pasta "' + g.name + '"? Os documentos continuam salvos e vão para Sem pasta.')) return;
+    var members = tabs.filter(function (t) { return groupIdFor(t) === id; });
+    for (var i = 0; i < members.length; i++) if (!await moveTabToGroup(members[i], '')) return;
+    groups = groups.filter(function (x) { return x.id !== id; });
+    if (dirHandle) { try { await dirHandle.removeEntry(g.dirName || g.name); } catch (e) { /* leave non-empty folders intact */ } }
+    Object.keys(folderAssignments).forEach(function (name) { if (folderAssignments[name] === id) delete folderAssignments[name]; });
+    if (activeGroupFilter === id) activeGroupFilter = 'all';
+    saveGroupData(); renderTabs(); updateDocGroup();
+  }
+  function compareText(before, after) {
+    var oldLines = String(before).split(/\r\n|\n|\r/), newLines = String(after).split(/\r\n|\n|\r/);
+    var ops = [], added = 0, removed = 0, truncated = false;
+    function push(kind, line) {
+      if (kind === 'add') added++;
+      if (kind === 'remove') removed++;
+      if (ops.length < 3000) ops.push({ kind: kind, line: line });
+      else truncated = true;
+    }
+    if (before === after) return { ops: [], added: 0, removed: 0, truncated: false };
+    var cells = (oldLines.length + 1) * (newLines.length + 1);
+    if (cells <= 150000) {
+      var cols = newLines.length + 1, dp = new Uint32Array(cells);
+      for (var i = oldLines.length - 1; i >= 0; i--) {
+        for (var j = newLines.length - 1; j >= 0; j--) {
+          var at = i * cols + j;
+          dp[at] = oldLines[i] === newLines[j]
+            ? dp[(i + 1) * cols + j + 1] + 1
+            : Math.max(dp[(i + 1) * cols + j], dp[i * cols + j + 1]);
+        }
+      }
+      var oi = 0, ni = 0;
+      while (oi < oldLines.length || ni < newLines.length) {
+        if (oi < oldLines.length && ni < newLines.length && oldLines[oi] === newLines[ni]) {
+          push('context', oldLines[oi]); oi++; ni++;
+        } else if (oi < oldLines.length && (ni === newLines.length || dp[(oi + 1) * cols + ni] >= dp[oi * cols + ni + 1])) {
+          push('remove', oldLines[oi++]);
+        } else push('add', newLines[ni++]);
+      }
+    } else {
+      var prefix = 0, suffix = 0;
+      while (prefix < oldLines.length && prefix < newLines.length && oldLines[prefix] === newLines[prefix]) prefix++;
+      while (suffix < oldLines.length - prefix && suffix < newLines.length - prefix && oldLines[oldLines.length - 1 - suffix] === newLines[newLines.length - 1 - suffix]) suffix++;
+      var lead = Math.min(prefix, 40);
+      for (var p = 0; p < lead; p++) push('context', oldLines[p]);
+      if (prefix > lead) push('skip', '... ' + (prefix - lead) + ' unchanged lines omitted ...');
+      var oldEnd = oldLines.length - suffix, newEnd = newLines.length - suffix;
+      removed = oldEnd - prefix; added = newEnd - prefix;
+      for (var r = prefix; r < Math.min(oldEnd, prefix + 1000); r++) if (ops.length < 3000) ops.push({ kind: 'remove', line: oldLines[r] });
+      if (removed > 1000) { ops.push({ kind: 'skip', line: '... ' + (removed - 1000) + ' removed lines omitted ...' }); truncated = true; }
+      for (var n = prefix; n < Math.min(newEnd, prefix + 1000); n++) if (ops.length < 3000) ops.push({ kind: 'add', line: newLines[n] });
+      if (added > 1000) { ops.push({ kind: 'skip', line: '... ' + (added - 1000) + ' added lines omitted ...' }); truncated = true; }
+      var tail = Math.min(suffix, 40);
+      if (suffix > tail) push('skip', '... ' + (suffix - tail) + ' unchanged lines omitted ...');
+      for (var q = tail; q > 0; q--) push('context', oldLines[oldLines.length - q]);
+    }
+    return { ops: ops, added: added, removed: removed, truncated: truncated };
+  }
+  function renderTextDiff() {
+    var text = $('#editorText').value, result = compareText(editorBaseText, text), code = $('#diffView code');
+    code.innerHTML = '';
+    result.ops.forEach(function (op) {
+      var line = el('span', 'diff-line ' + op.kind);
+      line.textContent = (op.kind === 'add' ? '+ ' : op.kind === 'remove' ? '- ' : op.kind === 'context' ? '  ' : '') + op.line + '\n';
+      code.appendChild(line);
+    });
+    $('#diffSummary').textContent = result.added || result.removed
+      ? result.added + ' adicionada(s), ' + result.removed + ' removida(s)' + (result.truncated ? ' — diff resumido para arquivos grandes' : '')
+      : 'Nenhuma alteração.';
+    $('#editSave').disabled = text === editorBaseText;
+  }
+  function openEditor() {
+    var t = tabById(activeId);
+    if (!t || t.guide) return;
+    editorTabId = t.id; editorOriginal = t.text; editorBaseText = t.text.replace(/\r\n?/g, '\n');
+    $('#editTitle').textContent = 'Editar: ' + t.name;
+    $('#editorText').value = editorBaseText;
+    renderTextDiff();
+    $('#editDlg').showModal();
+    $('#editorText').focus();
+  }
+  async function saveEditedFile() {
+    var t = tabById(editorTabId), text = $('#editorText').value;
+    if (!t) { $('#editDlg').close(); return; }
+    if (t.text !== editorOriginal) { toast('O arquivo mudou desde que você abriu o editor. Reabra para comparar a versão mais recente.'); return; }
+    if (text === editorBaseText) { $('#editDlg').close(); return; }
+    if (dirHandle && new Blob([text]).size > MAX_BYTES) { toast('Arquivos na pasta precisam ter no máximo 5 MB.'); return; }
+    if (dirHandle) {
+      try {
+        await hasWrite(dirHandle, true);
+        var written = await writeText(t.name, text, t.directoryHandle || dirHandle);
+        t.handle = written.handle; t.size = written.size; t.mtime = written.mtime;
+      } catch (e) { toast('Não foi possível salvar o arquivo na pasta.'); return; }
+    } else t.size = new Blob([text]).size;
+    t.text = text; t.cache = null;
+    persistTab(t);
+    var y = window.scrollY;
+    $('#editDlg').close(); editorTabId = null; editorOriginal = ''; editorBaseText = '';
+    await activate(t.id);
+    t.scroll = y; window.scrollTo({ top: y });
+    updateFolderInfo();
+    toast('Alterações salvas em ' + t.name + '.');
+  }
   async function renameActiveFile(value) {
     var t = tabById(activeId);
     if (!t || isReadme(t)) return;
@@ -1550,18 +1980,26 @@ dialog[open] { display: flex; flex-direction: column; }
     if (!name) { toast('Digite um nome para o arquivo.'); return; }
     if (!TEXT_RE.test(name)) name += '.md';
     if (name.toLowerCase() === t.name.toLowerCase()) { $('#renameDlg').close(); return; }
-    name = await uniqueFolderName(name, t.id);
+    var targetDir = t.directoryHandle || dirHandle;
+    name = await uniqueFolderName(name, t.id, targetDir, t.groupId || '');
     var oldName = t.name;
     if (dirHandle && !t.virtual) {
       var written;
-      try { written = await writeText(name, t.text); }
-      catch (e) { toast('NÃ£o foi possÃ­vel criar o arquivo com o novo nome.'); return; }
-      try { await dirHandle.removeEntry(oldName); }
+      try { written = await writeText(name, t.text, targetDir); }
+      catch (e) { toast('Could not create the renamed file.'); return; }
+      try { await targetDir.removeEntry(oldName); }
       catch (e) {
-        try { await dirHandle.removeEntry(name); } catch (ignored) {}
-        toast('NÃ£o foi possÃ­vel remover o arquivo antigo. O nome nÃ£o foi alterado.'); return;
+        try { await targetDir.removeEntry(name); } catch (ignored) {}
+        toast('Could not remove the old file; the name was not changed.'); return;
       }
-      t.handle = written.handle; t.size = written.size; t.mtime = written.mtime;
+      t.handle = written.handle; t.directoryHandle = targetDir; t.size = written.size; t.mtime = written.mtime;
+    }
+    if (dirHandle) {
+      var assignedGroup = folderAssignments[oldName] || t.groupId || '';
+      delete folderAssignments[oldName];
+      if (assignedGroup) folderAssignments[name] = assignedGroup;
+      t.groupId = assignedGroup;
+      saveGroupData();
     }
     t.name = name; t.cache = null;
     persistTab(t); persistActive();
@@ -1574,12 +2012,13 @@ dialog[open] { display: flex; flex-direction: column; }
     var last = null, added = 0, updated = 0, renamed = 0, same = 0, failed = 0, r;
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
+      if (!it.groupId && activeGroupFilter !== 'all' && activeGroupFilter !== 'none' && groups.some(function (g) { return g.id === activeGroupFilter; })) it.groupId = activeGroupFilter;
       if (dirHandle && !pendingHandle) {
         try { r = await folderAdd(it); } catch (e) { failed++; continue; }
         last = r.tab;
         added++; if (r.renamedFrom) renamed++;
       } else {
-        r = upsert(it.name, it.text, it.size != null ? it.size : new Blob([it.text]).size, it.pinned);
+        r = upsert(it.name, it.text, it.size != null ? it.size : new Blob([it.text]).size, it.pinned, it.groupId);
         last = r.tab;
         added++;
       }
@@ -1592,6 +2031,7 @@ dialog[open] { display: flex; flex-direction: column; }
     else if (updated) toast('Arquivo atualizado: ' + last.name);
     else if (added) toast('Arquivo adicionado: ' + last.name);
     else if (same && !added) toast('Este arquivo já está na pasta.');
+    return last;
   }
 
   function removeTab(id) {
@@ -1624,11 +2064,11 @@ dialog[open] { display: flex; flex-direction: column; }
   async function deleteActiveFile() {
     var t = tabById(activeId);
     if (!t || !dirHandle || isReadme(t)) return;
-    try { await dirHandle.removeEntry(t.name); }
+    try { await (t.directoryHandle || dirHandle).removeEntry(t.name); }
     catch (e) { toast('Não foi possível apagar o arquivo.'); return; }
     var i = tabs.indexOf(t);
     tabs.splice(i, 1);
-    lastDeleted = { name: t.name, text: t.text };
+    lastDeleted = { name: t.name, text: t.text, groupId: t.groupId || '' };
     var next = tabs[i] || tabs[i - 1] || null;
     if (next) activate(next.id);
     else { activeId = null; persistActive(); renderTabs(); showWelcome(); }
@@ -1639,7 +2079,7 @@ dialog[open] { display: flex; flex-direction: column; }
     if (!lastDeleted || !dirHandle) return;
     var r = lastDeleted; lastDeleted = null;
     try {
-      var res = await folderAdd({ name: r.name, text: r.text });
+      var res = await folderAdd({ name: r.name, text: r.text, groupId: r.groupId });
       await activate(res.tab.id);
       updateFolderInfo();
       toast('Arquivo restaurado: ' + res.tab.name);
@@ -1652,7 +2092,7 @@ dialog[open] { display: flex; flex-direction: column; }
     var stop = busy(btn);
     try {
       var zip = new JSZip();
-      tabs.filter(function (t) { return !t.virtual; }).forEach(function (t) { zip.file(t.name.replace(/[\\/:*?"<>|]+/g, '-'), t.text); });
+      tabs.filter(function (t) { return !t.virtual; }).forEach(function (t) { var path = t.groupId ? groupDirName(t.groupId) + '/' : ''; zip.file(path + t.name.replace(/[\\/:*?"<>|]+/g, '-'), t.text); });
       await downloadFile('leia-me-pasta.zip', await zip.generateAsync({ type: 'blob' }));
     } catch (e) { toast('Não foi possível montar o pacote da pasta.'); }
     finally { stop(); }
@@ -1671,6 +2111,29 @@ dialog[open] { display: flex; flex-direction: column; }
   }
   var fileInput = $('#file');
   function pick() { fileInput.value = ''; fileInput.click(); }
+  $('#btnNewDoc').addEventListener('click', createMarkdownDoc);
+  $('#btnMarkdownHelp').addEventListener('click', openMarkdownHelp);
+  $('#markdownClose').addEventListener('click', function () { $('#markdownDlg').close(); });
+  $('#markdownSearch').addEventListener('input', renderMarkdownHelp);
+  $('#markdownList').addEventListener('click', async function (e) {
+    var button = e.target.closest('[data-copy-markdown]');
+    if (!button) return;
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyMarkdown);
+      toast('Sintaxe copiada.');
+    } catch (err) {
+      var copyBox = document.createElement('textarea'); copyBox.value = button.dataset.copyMarkdown;
+      copyBox.style.position = 'fixed'; copyBox.style.opacity = '0'; document.body.appendChild(copyBox); copyBox.select();
+      var copied = document.execCommand('copy'); copyBox.remove();
+      toast(copied ? 'Sintaxe copiada.' : 'Não foi possível copiar a sintaxe.');
+    }
+  });
+  window.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.altKey && !e.shiftKey && String(e.key).toLowerCase() === 'm') {
+      e.preventDefault();
+      if ($('#markdownDlg').open) $('#markdownDlg').close(); else openMarkdownHelp();
+    }
+  });
   fileInput.addEventListener('change', function () { readFiles(fileInput.files); });
   $('#btnOpen').addEventListener('click', pick);
   $('#btnAdd').addEventListener('click', pick);
@@ -1715,6 +2178,10 @@ dialog[open] { display: flex; flex-direction: column; }
   $('#delOk').addEventListener('click', function () { delDlg.close(); deleteActiveFile(); });
 
   var renameDlg = $('#renameDlg');
+  $('#btnEditFile').addEventListener('click', openEditor);
+  $('#editorText').addEventListener('input', renderTextDiff);
+  $('#editCancel').addEventListener('click', function () { $('#editDlg').close(); editorTabId = null; editorOriginal = ''; editorBaseText = ''; });
+  $('#editSave').addEventListener('click', saveEditedFile);
   $('#btnRenameFile').addEventListener('click', function () {
     var t = tabById(activeId);
     if (!t || isReadme(t)) return;
@@ -1726,6 +2193,34 @@ dialog[open] { display: flex; flex-direction: column; }
   $('#renameOk').addEventListener('click', function () { renameActiveFile($('#renameInput').value); });
   $('#renameInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); renameActiveFile(this.value); } });
 
+  var groupDlg = $('#groupDlg');
+  $('#btnNewGroup').addEventListener('click', function () { openGroupDialog(null); });
+  $('#groupCancel').addEventListener('click', function () { groupDlg.close(); });
+  $('#groupSave').addEventListener('click', saveGroup);
+  $('#groupName').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); saveGroup(); } });
+  $('#groups').addEventListener('click', function (e) {
+    var edit = e.target.closest('[data-edit-group]');
+    if (edit) { openGroupDialog(edit.dataset.editGroup); return; }
+    var del = e.target.closest('[data-delete-group]');
+    if (del) { deleteGroup(del.dataset.deleteGroup); return; }
+    var filter = e.target.closest('[data-group-filter]');
+    if (!filter) return;
+    activeGroupFilter = filter.dataset.groupFilter;
+    renderTabs();
+    var visible = visibleTabs();
+    if (visible.length && !visible.some(function (t) { return t.id === activeId; })) activate(visible[0].id);
+  });
+  $('#docGroup').addEventListener('change', async function () {
+    var t = tabById(activeId);
+    if (!t || t.guide) return;
+    var id = this.value || '';
+    var changed = await moveTabToGroup(t, id);
+    if (!changed) { updateDocGroup(); return; }
+    saveGroupData();
+    activeGroupFilter = id || 'all';
+    renderTabs(); updateDocGroup();
+  });
+
   $('#tabs').addEventListener('click', function (e) {
     var x = e.target.closest('[data-close]');
     if (x) { removeTab(x.dataset.close); return; }
@@ -1735,18 +2230,19 @@ dialog[open] { display: flex; flex-direction: column; }
   $('#tabs').addEventListener('keydown', function (e) {
     var main = e.target.closest('.tab-main');
     if (!main) return;
+    var shownTabs = visibleTabs();
     var i = -1;
-    tabs.forEach(function (t, k) { if (t.id === main.dataset.id) i = k; });
+    shownTabs.forEach(function (t, k) { if (t.id === main.dataset.id) i = k; });
     var j = i;
-    if (e.key === 'ArrowRight') j = Math.min(tabs.length - 1, i + 1);
+    if (e.key === 'ArrowRight') j = Math.min(shownTabs.length - 1, i + 1);
     else if (e.key === 'ArrowLeft') j = Math.max(0, i - 1);
     else if (e.key === 'Home') j = 0;
-    else if (e.key === 'End') j = tabs.length - 1;
+    else if (e.key === 'End') j = shownTabs.length - 1;
     else return;
     e.preventDefault();
-    if (j !== i) {
-      activate(tabs[j].id);
-      var nb = $('#tabs .tab-main[data-id="' + tabs[j].id + '"]');
+    if (j >= 0 && j < shownTabs.length && j !== i) {
+      activate(shownTabs[j].id);
+      var nb = $('#tabs .tab-main[data-id="' + shownTabs[j].id + '"]');
       if (nb) nb.focus();
     }
   });
@@ -1764,12 +2260,16 @@ dialog[open] { display: flex; flex-direction: column; }
     try {
       var rows = await DB.all();
       rows.sort(function (a, b) { return a.order - b.order; });
-      tabs = rows.map(function (r) { var guide = !!r.guide || (!!r.pinned && r.text === SAMPLE); return { id: r.id, name: r.name, text: r.text, size: r.size, pinned: guide, guide: guide, sourceRoot: !!r.sourceRoot || (!!r.pinned && r.text !== SAMPLE && /^README\.md$/i.test(r.name)), order: r.order, cache: null, scroll: 0 }; });
+      tabs = rows.map(function (r) { var guide = !!r.guide || (!!r.pinned && r.text === SAMPLE); return { id: r.id, name: r.name, text: r.text, size: r.size, pinned: guide, guide: guide, groupId: r.groupId || '', sourceRoot: !!r.sourceRoot || (!!r.pinned && r.text !== SAMPLE && /^README\.md$/i.test(r.name)), order: r.order, cache: null, scroll: 0 }; });
       orderSeq = tabs.reduce(function (m, t) { return Math.max(m, t.order); }, 0);
       var am = await DB.getMeta('active');
       activeName = am && am.value ? am.value : null;
       var sm = await DB.getMeta('seen');
       seen = !!(sm && sm.value);
+      var gm = await DB.getMeta('groups');
+      groups = gm && Array.isArray(gm.value) ? gm.value : [];
+      var fm = await DB.getMeta('folderAssignments');
+      folderAssignments = fm && fm.value && typeof fm.value === 'object' ? fm.value : {};
       if (fsSupported) { var dm = await DB.getMeta('dir'); handle = dm && dm.value ? dm.value : null; }
     } catch (e) { persistOk = false; }
     if (handle) {
@@ -1795,9 +2295,9 @@ dialog[open] { display: flex; flex-direction: column; }
             if (!activeName) activeName = rootTab.name;
           }
         }
-      } catch (e) { /* acesso automÃ¡tico depende de servir a pÃ¡gina por http/https */ }
+      } catch (e) { /* automatic README loading requires HTTP or HTTPS */ }
     }
-    var want = tabs.filter(function (t) { return t.name === activeName || t.id === activeName; })[0] || tabs[0];
+    var want = tabs.filter(function (t) { return tabKey(t) === activeName || t.name === activeName || t.id === activeName; })[0] || tabs[0];
     if (want) await activate(want.id); else showWelcome();
     updateFolderInfo();
   }
