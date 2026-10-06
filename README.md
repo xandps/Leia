@@ -102,6 +102,6 @@ Quando a página é aberta por HTTP ou HTTPS e não há uma pasta do computador 
 
 ## Aparência e requisitos
 
-O site adapta o tema claro ou escuro à preferência de aparência do navegador/sistema. A interface também se ajusta a telas menores, com painel recolhível e barras de abas e pastas que podem ser roladas horizontalmente.
+O site usa uma interface escura com superfícies em camadas e acentos violeta e ciano. A interface também se ajusta a telas menores, com painel recolhível e barras de abas e pastas que podem ser roladas horizontalmente.
 
 As bibliotecas de leitura, diagramas e exportação são carregadas pela internet. Para usar todos esses recursos, mantenha uma conexão disponível.
