@@ -369,6 +369,7 @@ dialog[open] { display: flex; flex-direction: column; }
     <details id="panel" open>
       <summary>Painel do documento</summary>
       <div class="fileinfo"><strong id="fname"></strong><span id="fmeta"></span></div>
+      <div id="renameRow" hidden style="margin-bottom:12px"><button class="btn small wide" id="btnRenameFile" type="button">Renomear arquivo</button></div>
       <div id="delRow" hidden style="margin-bottom:12px"><button class="btn small wide" id="btnDelFile" type="button">Apagar da pasta…</button></div>
       <section class="side-sec" id="outlineSec">
         <h2>Neste documento</h2>
@@ -440,6 +441,15 @@ dialog[open] { display: flex; flex-direction: column; }
   <div class="dlg-foot">
     <button class="btn" type="button" id="delCancel">Cancelar</button>
     <button class="btn primary" type="button" id="delOk">Apagar arquivo</button>
+  </div>
+</dialog>
+
+<dialog id="renameDlg" aria-labelledby="renameTitle" style="width:min(480px,94vw)">
+  <div class="dlg-head"><h2 id="renameTitle">Renomear arquivo</h2></div>
+  <div class="dlg-body"><div class="field"><label for="renameInput">Novo nome</label><input id="renameInput" type="text" autocomplete="off" spellcheck="false"></div></div>
+  <div class="dlg-foot">
+    <button class="btn" type="button" id="renameCancel">Cancelar</button>
+    <button class="btn primary" type="button" id="renameOk">Renomear</button>
   </div>
 </dialog>
 
@@ -1245,13 +1255,14 @@ dialog[open] { display: flex; flex-direction: column; }
 
   function newId() { return 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
   function tabById(id) { return tabs.filter(function (t) { return t.id === id; })[0]; }
+  function isReadme(t) { return !!t && t.pinned === true; }
   function sortTabs() {
     if (dirHandle) tabs.sort(function (a, b) { return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }); });
   }
   function failPersist() { persistOk = false; updateFolderInfo(); }
   function persistTab(t) {
     if (!persistOk || dirHandle) return;
-    DB.put({ id: t.id, name: t.name, text: t.text, size: t.size, order: t.order }).catch(failPersist);
+    DB.put({ id: t.id, name: t.name, text: t.text, size: t.size, order: t.order, pinned: !!t.pinned, guide: !!t.guide, sourceRoot: !!t.sourceRoot }).catch(failPersist);
   }
   function persistActive() {
     var t = tabById(activeId);
@@ -1259,7 +1270,8 @@ dialog[open] { display: flex; flex-direction: column; }
   }
 
   function updateFolderInfo() {
-    var n = tabs.length, total = tabs.reduce(function (a, t) { return a + t.size; }, 0);
+    var storedTabs = tabs.filter(function (t) { return !t.virtual; });
+    var n = storedTabs.length, total = storedTabs.reduce(function (a, t) { return a + t.size; }, 0);
     var connected = !!dirHandle && !pendingHandle, pend = !!pendingHandle;
     $('#folderMeta').textContent = n + (n === 1 ? ' arquivo' : ' arquivos') + ', ' + fmtSize(total);
     var nameEl = $('#folderName');
@@ -1278,7 +1290,9 @@ dialog[open] { display: flex; flex-direction: column; }
     $('#btnChangeDir').hidden = !(connected || pend);
     $('#btnDropDir').hidden = !(connected || pend);
     $('#saveToFolderRow').hidden = !connected;
-    $('#delRow').hidden = !(connected && activeId);
+    var activeTab = tabById(activeId);
+    $('#renameRow').hidden = !activeTab || isReadme(activeTab);
+    $('#delRow').hidden = !(connected && activeTab && !isReadme(activeTab));
     $('#btnFolderZip').disabled = !n;
     var hb = $('#btnDir');
     hb.hidden = !fsSupported;
@@ -1315,34 +1329,46 @@ dialog[open] { display: flex; flex-direction: column; }
   }
   function uniqueName(base) {
     var m = /^(.*?)(\.[^.]+)?$/.exec(base), stem = m[1], ext = m[2] || '', n = base, k = 2;
-    while (tabs.some(function (t) { return t.name === n; })) n = stem + ' ' + (k++) + ext;
+    while (tabs.some(function (t) { return t.name.toLowerCase() === n.toLowerCase(); })) n = stem + ' (' + (k++) + ')' + ext;
     return n;
+  }
+  function uniqueNameExcept(base, exceptId) {
+    var m = /^(.*?)(\.[^.]+)?$/.exec(base), stem = m[1], ext = m[2] || '', n = base, k = 2;
+    while (tabs.some(function (t) { return t.id !== exceptId && t.name.toLowerCase() === n.toLowerCase(); })) n = stem + ' (' + (k++) + ')' + ext;
+    return n;
+  }
+  async function uniqueFolderName(base, exceptId) {
+    var m = /^(.*?)(\.[^.]+)?$/.exec(base), stem = m[1], ext = m[2] || '';
+    for (var k = 1; ; k++) {
+      var n = k === 1 ? base : stem + ' (' + k + ')' + ext;
+      var exists = tabs.some(function (t) { return t.id !== exceptId && t.name.toLowerCase() === n.toLowerCase(); });
+      if (!exists && dirHandle) { try { await dirHandle.getFileHandle(n); exists = true; } catch (e) { exists = false; } }
+      if (!exists) return n;
+    }
   }
   /* Nunca sobrescreve um arquivo da pasta: nome repetido com conteúdo diferente vira "nome 2.md" */
   async function folderAdd(it) {
-    var same = tabs.filter(function (t) { return t.name === it.name; })[0], name = it.name, renamedFrom = null;
-    if (same) {
-      if (same.text === it.text) return { tab: same, same: true };
-      name = uniqueName(it.name); renamedFrom = it.name;
-    }
+    var name = await uniqueFolderName(it.name, null);
+    var duplicate = name.toLowerCase() !== it.name.toLowerCase();
     var w = await writeText(name, it.text);
-    var t = { id: newId(), name: name, text: it.text, size: w.size, mtime: w.mtime, handle: w.handle, order: ++orderSeq, cache: null, scroll: 0 };
+    var t = { id: newId(), name: name, text: it.text, size: w.size, mtime: w.mtime, handle: w.handle, pinned: !!it.pinned, order: ++orderSeq, cache: null, scroll: 0 };
     tabs.push(t); sortTabs();
-    return { tab: t, renamedFrom: renamedFrom };
+    return { tab: t, renamedFrom: duplicate ? it.name : null };
   }
 
   async function connectFolder(handle, opts) {
     opts = opts || {};
     await hasWrite(handle, true);
     var prev = tabById(activeId), prevName = opts.activeName || (prev ? prev.name : null);
-    var mem = tabs.filter(function (t) { return !t.handle && t.text !== SAMPLE; });
+    var mem = tabs.filter(function (t) { return !t.handle && !t.sourceRoot && t.text !== SAMPLE; });
     var disk = await readDir(handle);
     dirHandle = handle; pendingHandle = null;
     tabs = disk.map(function (d, i) {
-      return { id: newId(), name: d.name, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, order: i + 1, cache: null, scroll: 0 };
+      return { id: newId(), name: d.name, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, pinned: false, order: i + 1, cache: null, scroll: 0 };
     });
     orderSeq = tabs.length;
     sortTabs();
+    ensureGuideTab();
     var copied = 0, renamed = 0;
     for (var i = 0; i < mem.length; i++) {
       var r = await folderAdd({ name: mem[i].name, text: mem[i].text });
@@ -1408,6 +1434,7 @@ dialog[open] { display: flex; flex-direction: column; }
       disk.forEach(function (d) { byName[d.name] = d; });
       var changed = false, activeGone = false, activeChanged = false;
       tabs = tabs.filter(function (t) {
+        if (t.virtual) return true;
         var d = byName[t.name];
         if (!d) { changed = true; if (t.id === activeId) activeGone = true; return false; }
         if (d.mtime !== t.mtime || d.size !== t.size) {
@@ -1419,7 +1446,7 @@ dialog[open] { display: flex; flex-direction: column; }
       });
       Object.keys(byName).forEach(function (n) {
         var d = byName[n]; changed = true;
-        tabs.push({ id: newId(), name: n, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, order: ++orderSeq, cache: null, scroll: 0 });
+        tabs.push({ id: newId(), name: n, text: d.text, size: d.size, mtime: d.mtime, handle: d.handle, pinned: false, order: ++orderSeq, cache: null, scroll: 0 });
       });
       sortTabs();
       if (changed) {
@@ -1459,7 +1486,7 @@ dialog[open] { display: flex; flex-direction: column; }
       b.tabIndex = on ? 0 : -1; b.dataset.id = t.id; b.title = t.name;
       var sp = el('span', 'tab-name'); sp.textContent = t.name; b.appendChild(sp);
       wrap.appendChild(b);
-      if (!dirHandle) {
+      if (!dirHandle && !isReadme(t)) {
         var x = el('button', 'tab-x');
         x.type = 'button'; x.dataset.close = t.id; x.textContent = '×';
         x.setAttribute('aria-label', 'Remover ' + t.name + ' da pasta'); x.title = 'Remover da pasta';
@@ -1501,12 +1528,47 @@ dialog[open] { display: flex; flex-direction: column; }
   }
 
   /* ---------- Adicionar, remover e apagar ---------- */
-  function upsert(name, text, size) {
-    var t = tabs.filter(function (x) { return x.name === name; })[0], replaced = false;
-    if (t) { t.text = text; t.size = size; t.cache = null; replaced = true; }
-    else { t = { id: newId(), name: name, text: text, size: size, order: ++orderSeq, cache: null, scroll: 0 }; tabs.push(t); }
+  function upsert(name, text, size, pinned) {
+    if (tabs.some(function (x) { return x.name.toLowerCase() === name.toLowerCase(); })) name = uniqueName(name);
+    var t = { id: newId(), name: name, text: text, size: size, pinned: !!pinned, order: ++orderSeq, cache: null, scroll: 0 };
+    tabs.push(t);
     persistTab(t);
-    return { tab: t, replaced: replaced };
+    return { tab: t, replaced: false };
+  }
+  function ensureGuideTab() {
+    var existing = tabs.filter(function (t) { return t.guide || (t.text === SAMPLE && (!t.handle || t.virtual) && (t.pinned || /^(README|LEIA-ME|Guia de uso)( \(\d+\))?\.md$/i.test(t.name))); })[0];
+    if (existing) { existing.name = uniqueNameExcept('Como usar o site.md', existing.id); existing.pinned = true; existing.guide = true; existing.virtual = !!dirHandle; if (!dirHandle) persistTab(existing); return existing; }
+    var t = { id: newId(), name: uniqueName('Como usar o site.md'), text: SAMPLE, size: new Blob([SAMPLE]).size, pinned: true, guide: true, virtual: !!dirHandle, order: ++orderSeq, cache: null, scroll: 0 };
+    tabs.push(t);
+    if (!dirHandle) persistTab(t);
+    return t;
+  }
+  async function renameActiveFile(value) {
+    var t = tabById(activeId);
+    if (!t || isReadme(t)) return;
+    var name = String(value || '').trim().replace(/[\\/:*?"<>|]+/g, '-');
+    if (!name) { toast('Digite um nome para o arquivo.'); return; }
+    if (!TEXT_RE.test(name)) name += '.md';
+    if (name.toLowerCase() === t.name.toLowerCase()) { $('#renameDlg').close(); return; }
+    name = await uniqueFolderName(name, t.id);
+    var oldName = t.name;
+    if (dirHandle && !t.virtual) {
+      var written;
+      try { written = await writeText(name, t.text); }
+      catch (e) { toast('NÃ£o foi possÃ­vel criar o arquivo com o novo nome.'); return; }
+      try { await dirHandle.removeEntry(oldName); }
+      catch (e) {
+        try { await dirHandle.removeEntry(name); } catch (ignored) {}
+        toast('NÃ£o foi possÃ­vel remover o arquivo antigo. O nome nÃ£o foi alterado.'); return;
+      }
+      t.handle = written.handle; t.size = written.size; t.mtime = written.mtime;
+    }
+    t.name = name; t.cache = null;
+    persistTab(t); persistActive();
+    $('#renameDlg').close();
+    renderTabs(); updateFolderInfo();
+    await activate(t.id);
+    toast('Arquivo renomeado para ' + name + '.');
   }
   async function addTexts(items) {
     var last = null, added = 0, updated = 0, renamed = 0, same = 0, failed = 0, r;
@@ -1515,11 +1577,11 @@ dialog[open] { display: flex; flex-direction: column; }
       if (dirHandle && !pendingHandle) {
         try { r = await folderAdd(it); } catch (e) { failed++; continue; }
         last = r.tab;
-        if (r.same) same++; else { added++; if (r.renamedFrom) renamed++; }
+        added++; if (r.renamedFrom) renamed++;
       } else {
-        r = upsert(it.name, it.text, it.size != null ? it.size : new Blob([it.text]).size);
+        r = upsert(it.name, it.text, it.size != null ? it.size : new Blob([it.text]).size, it.pinned);
         last = r.tab;
-        if (r.replaced) updated++; else added++;
+        added++;
       }
     }
     if (last) await activate(last.id);
@@ -1528,11 +1590,13 @@ dialog[open] { display: flex; flex-direction: column; }
     else if (renamed) toast(added + ' arquivos salvos na pasta. ' + renamed + ' já existiam com outro conteúdo e ganharam um número no nome.');
     else if (items.length > 1) toast(added + (added === 1 ? ' arquivo adicionado' : ' arquivos adicionados') + (updated ? ' e ' + updated + (updated === 1 ? ' atualizado' : ' atualizados') : '') + '.');
     else if (updated) toast('Arquivo atualizado: ' + last.name);
+    else if (added) toast('Arquivo adicionado: ' + last.name);
     else if (same && !added) toast('Este arquivo já está na pasta.');
   }
 
   function removeTab(id) {
     if (dirHandle) return;
+    if (isReadme(tabById(id))) return;
     var i = -1;
     tabs.forEach(function (t, k) { if (t.id === id) i = k; });
     if (i < 0) return;
@@ -1559,7 +1623,7 @@ dialog[open] { display: flex; flex-direction: column; }
 
   async function deleteActiveFile() {
     var t = tabById(activeId);
-    if (!t || !dirHandle) return;
+    if (!t || !dirHandle || isReadme(t)) return;
     try { await dirHandle.removeEntry(t.name); }
     catch (e) { toast('Não foi possível apagar o arquivo.'); return; }
     var i = tabs.indexOf(t);
@@ -1588,7 +1652,7 @@ dialog[open] { display: flex; flex-direction: column; }
     var stop = busy(btn);
     try {
       var zip = new JSZip();
-      tabs.forEach(function (t) { zip.file(t.name.replace(/[\\/:*?"<>|]+/g, '-'), t.text); });
+      tabs.filter(function (t) { return !t.virtual; }).forEach(function (t) { zip.file(t.name.replace(/[\\/:*?"<>|]+/g, '-'), t.text); });
       await downloadFile('leia-me-pasta.zip', await zip.generateAsync({ type: 'blob' }));
     } catch (e) { toast('Não foi possível montar o pacote da pasta.'); }
     finally { stop(); }
@@ -1650,6 +1714,18 @@ dialog[open] { display: flex; flex-direction: column; }
   $('#delCancel').addEventListener('click', function () { delDlg.close(); });
   $('#delOk').addEventListener('click', function () { delDlg.close(); deleteActiveFile(); });
 
+  var renameDlg = $('#renameDlg');
+  $('#btnRenameFile').addEventListener('click', function () {
+    var t = tabById(activeId);
+    if (!t || isReadme(t)) return;
+    $('#renameInput').value = t.name;
+    renameDlg.showModal();
+    $('#renameInput').focus(); $('#renameInput').select();
+  });
+  $('#renameCancel').addEventListener('click', function () { renameDlg.close(); });
+  $('#renameOk').addEventListener('click', function () { renameActiveFile($('#renameInput').value); });
+  $('#renameInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); renameActiveFile(this.value); } });
+
   $('#tabs').addEventListener('click', function (e) {
     var x = e.target.closest('[data-close]');
     if (x) { removeTab(x.dataset.close); return; }
@@ -1688,7 +1764,7 @@ dialog[open] { display: flex; flex-direction: column; }
     try {
       var rows = await DB.all();
       rows.sort(function (a, b) { return a.order - b.order; });
-      tabs = rows.map(function (r) { return { id: r.id, name: r.name, text: r.text, size: r.size, order: r.order, cache: null, scroll: 0 }; });
+      tabs = rows.map(function (r) { var guide = !!r.guide || (!!r.pinned && r.text === SAMPLE); return { id: r.id, name: r.name, text: r.text, size: r.size, pinned: guide, guide: guide, sourceRoot: !!r.sourceRoot || (!!r.pinned && r.text !== SAMPLE && /^README\.md$/i.test(r.name)), order: r.order, cache: null, scroll: 0 }; });
       orderSeq = tabs.reduce(function (m, t) { return Math.max(m, t.order); }, 0);
       var am = await DB.getMeta('active');
       activeName = am && am.value ? am.value : null;
@@ -1705,13 +1781,24 @@ dialog[open] { display: flex; flex-direction: column; }
         pendingHandle = handle;
       } catch (e) { pendingHandle = null; }
     }
-    if (tabs.length) {
-      var want = tabs.filter(function (t) { return t.name === activeName || t.id === activeName; })[0] || tabs[0];
-      await activate(want.id);
-    } else if (!seen && !pendingHandle) {
-      if (persistOk) DB.setMeta('seen', true).catch(function () {});
-      await addTexts([{ name: 'LEIA-ME.md', text: SAMPLE }]);
-    } else showWelcome();
+    ensureGuideTab();
+    if (!dirHandle && location.protocol !== 'file:') {
+      try {
+        var rootResponse = await fetch('./README.md', { cache: 'no-store' });
+        if (rootResponse.ok) {
+          var rootText = await rootResponse.text();
+          var rootTab = tabs.filter(function (t) { return t.sourceRoot; })[0];
+          if (rootTab) { rootTab.text = rootText; rootTab.size = new Blob([rootText]).size; rootTab.cache = null; persistTab(rootTab); }
+          else {
+            rootTab = upsert('README.md', rootText, new Blob([rootText]).size, false).tab;
+            rootTab.sourceRoot = true; persistTab(rootTab);
+            if (!activeName) activeName = rootTab.name;
+          }
+        }
+      } catch (e) { /* acesso automÃ¡tico depende de servir a pÃ¡gina por http/https */ }
+    }
+    var want = tabs.filter(function (t) { return t.name === activeName || t.id === activeName; })[0] || tabs[0];
+    if (want) await activate(want.id); else showWelcome();
     updateFolderInfo();
   }
 
@@ -1723,7 +1810,7 @@ dialog[open] { display: flex; flex-direction: column; }
       if (act === 'open') return pick();
       if (act === 'pickdir') return pickDir();
       if (act === 'reconnect') return reconnect();
-      if (act === 'sample') return addTexts([{ name: 'LEIA-ME.md', text: SAMPLE }]);
+      if (act === 'sample') { var guide = ensureGuideTab(); renderTabs(); updateFolderInfo(); return activate(guide.id); }
       var fig = btn.closest('figure.diagram');
       var d = fig && diagrams.filter(function (x) { return x.n === parseInt(fig.dataset.n, 10); })[0];
       if (!d) return;
