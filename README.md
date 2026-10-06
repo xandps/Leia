@@ -1,67 +1,79 @@
-﻿# Guia de uso do Leia-me
+﻿# Guia completo do Leia-me
 
-O Leia-me é um leitor e organizador de documentos Markdown. Com ele, você pode abrir ou criar arquivos `.md`, ler e editar o conteúdo, comparar alterações, organizar documentos em pastas e exportar documentos e diagramas.
+O Leia-me é um leitor e organizador de documentos Markdown. Você pode abrir arquivos existentes, criar e editar documentos, acompanhar as alterações em uma comparação visual, organizar arquivos em grupos e exportar documentos ou diagramas.
 
-## Começar
+## Início rápido
 
 1. Clique em **Abrir arquivos** ou arraste arquivos para a página.
-2. Cada documento aparece em uma aba. Selecione a aba para alternar entre documentos.
-3. Clique em **Novo .md** para criar um arquivo. Ele começa com o título `# Novo documento` e abre no editor.
-4. Clique em **Markdown** para pesquisar comandos e exemplos da sintaxe.
+2. Abra **Novo .md** para começar um documento novo. Ele recebe o título `# Novo documento` e abre no editor.
+3. Cada arquivo aberto aparece em uma aba. Selecione uma aba para alternar entre documentos.
+4. Clique em **Markdown** para consultar os comandos e pesquisar exemplos.
 
-O Leia-me aceita `.md`, `.markdown`, `.mdown` e `.txt`. Você pode abrir vários arquivos de uma vez. Se já houver um arquivo com o mesmo nome, o novo recebe um número — por exemplo, `anotacoes (2).md` — para evitar substituir o existente.
+São aceitos arquivos `.md`, `.markdown`, `.mdown` e `.txt`. Você pode abrir vários arquivos juntos. O Leia-me não substitui um arquivo de mesmo nome: cria uma cópia numerada, como `anotacoes (2).md`, `anotacoes (3).md` e assim por diante.
 
-## Abrir e criar documentos
+## Criar, abrir e adicionar arquivos
 
-- **Abrir arquivos** abre documentos selecionados no computador.
-- **+ Adicionar** abre mais arquivos nas abas atuais.
-- Também é possível arrastar arquivos para a página.
-- **Colar Markdown** cria um documento a partir de texto colado e permite informar o nome do arquivo.
-- **Novo .md** cria um documento com o título inicial e abre o editor para você continuar escrevendo.
+- **Novo .md** cria um arquivo Markdown com o título inicial e abre o editor.
+- **Abrir arquivos** seleciona um ou mais arquivos no computador.
+- **+ Adicionar** inclui arquivos em uma sessão que já está aberta.
+- Arrastar arquivos para a página também os abre como abas.
+- **Colar Markdown** abre uma janela para colar texto e escolher o nome do documento.
 
-## Editar, renomear e apagar
+O conteúdo fica salvo no armazenamento do navegador enquanto você não conecta uma pasta do computador. As abas de documentos comuns podem ser removidas com **×**; a opção **Desfazer** aparece logo depois. O guia interno **Como usar o site** fica em uma aba separada e protegida.
 
-Selecione um documento e use o painel lateral:
+## Editar, comparar, renomear e apagar
 
-- **Editar documento** abre o texto Markdown e uma comparação com o original. As linhas adicionadas e removidas ficam destacadas. **Salvar alterações** grava o texto.
-- **Renomear arquivo** altera o nome. Nomes existentes não são substituídos; o Leia-me acrescenta um número quando necessário.
-- **Apagar da pasta** remove o arquivo do computador se uma pasta estiver conectada. Logo após apagar, use **Desfazer** para restaurá-lo.
+Com um documento selecionado, use as opções do painel lateral:
 
-Sem uma pasta do computador conectada, os documentos são guardados no navegador. Nesse modo, o botão **×** remove uma aba e também oferece **Desfazer**.
+- **Editar documento** abre o texto Markdown e a comparação com o original. Linhas incluídas e removidas ficam destacadas enquanto você escreve. **Salvar alterações** grava a nova versão.
+- Se o arquivo mudar depois que o editor for aberto, o Leia-me avisa para você reabrir e comparar com a versão mais recente.
+- **Renomear arquivo** altera o nome e conserva o conteúdo. Caso já exista um arquivo com o nome escolhido, o Leia-me usa o próximo número disponível.
+- **Apagar da pasta** remove o arquivo da pasta conectada no computador. A notificação oferece **Desfazer** para restaurá-lo.
 
-## Organizar em pastas
+Sem pasta conectada, os documentos são mantidos no navegador e o **×** remove a aba da lista local.
 
-A barra **Pastas** permite criar grupos com **+ Criar pasta**. Use os ícones junto a cada grupo para renomeá-lo ou excluí-lo. Os filtros **Todos** e **Sem pasta** ajudam a encontrar documentos.
+## Organizar documentos em pastas
 
-Para mover um documento, abra-o e escolha uma opção em **Organizar em pasta**, no painel lateral. Um documento criado enquanto um grupo está selecionado é adicionado a esse grupo.
+A barra **Pastas** mostra os filtros **Todos** e **Sem pasta**, além dos grupos criados pelo usuário.
 
-Quando uma pasta do computador está conectada, os grupos também são subpastas reais dentro dela. Mover um documento no site move o arquivo no computador. Renomear um grupo atualiza o nome da pasta e dos documentos organizados nela. Ao excluir um grupo, os documentos vão para a pasta principal; arquivos que não são gerenciados pelo Leia-me podem fazer a pasta antiga permanecer.
+1. Clique em **+ Criar pasta** e informe um nome.
+2. Selecione um documento e escolha o grupo em **Organizar em pasta**, no painel lateral.
+3. Para ver somente os documentos de um grupo, selecione o filtro dele.
+4. Use os controles ao lado de um grupo para renomeá-lo ou excluí-lo.
 
-## Usar uma pasta do computador
+Documentos novos são colocados no grupo que estiver selecionado. Se não houver uma pasta do computador conectada, os grupos organizam os documentos no armazenamento local do navegador.
 
-Sem conectar uma pasta, os documentos ficam armazenados no navegador. Para trabalhar com arquivos diretamente no computador, escolha **Escolher pasta** no painel **Pasta de arquivos** e conceda permissão ao navegador.
+Com uma pasta do computador conectada, cada grupo é uma subpasta real. Criar, renomear e excluir grupos e mover documentos atualiza a organização no disco. Ao excluir um grupo, os documentos que ele contém vão para a pasta principal. A pasta antiga só é removida se estiver vazia; outros arquivos dentro dela são preservados.
 
-Com a pasta conectada:
+## Conectar uma pasta do computador
 
-- Os arquivos `.md`, `.markdown`, `.mdown` e `.txt` da pasta principal e dos grupos aparecem nas abas.
-- Criar, editar, renomear e mover documentos pelo site atualiza os arquivos no computador.
-- **Atualizar a pasta** lê novamente o conteúdo para refletir alterações feitas fora do site.
-- Se a permissão expirar, clique em **Reconectar à pasta**.
-- **Desconectar a pasta** encerra o acesso do site, mas não apaga os arquivos do computador.
+No painel **Pasta de arquivos**, clique em **Escolher pasta no computador** e permita o acesso. Chrome e Edge são recomendados; a seleção de diretórios pode exigir HTTPS ou `localhost`.
 
-A escolha de pastas depende do suporte do navegador e pode exigir que o site seja aberto em HTTPS ou em `localhost`. Chrome e Edge são recomendados. Se a seleção de pastas não estiver disponível, você ainda pode abrir arquivos e guardá-los no navegador.
+Depois de conectar:
+
+- Os arquivos `.md`, `.markdown`, `.mdown` e `.txt` da pasta principal e dos grupos conhecidos aparecem como abas.
+- Novos documentos são gravados no diretório correspondente. Edições, renomeações e movimentos também são aplicados aos arquivos no computador.
+- **Atualizar a pasta** compara o conteúdo do disco com as abas e atualiza a visualização. O site também tenta sincronizar quando a página volta a ficar visível.
+- Se o navegador solicitar autorização novamente, clique em **Reconectar à pasta**.
+- **Trocar de pasta** seleciona outro diretório. **Desconectar a pasta** encerra o acesso do site e mantém os arquivos no computador.
+
+Pastas de grupos criadas antes de conectar o computador são materializadas como subpastas quando a pasta é conectada. Arquivos ocultos e arquivos com mais de 5 MB são ignorados ao ler o diretório. O Leia-me acompanha a pasta conectada e as subpastas de grupos que ele conhece.
 
 ## Leitura e recursos Markdown
 
-O documento é exibido como uma página formatada. O painel lateral lista títulos e diagramas para facilitar a navegação. Em telas estreitas, abra ou recolha o painel tocando em **Painel do documento**.
+O Leia-me transforma o texto Markdown em uma página formatada. O painel lateral **Neste documento** lista os títulos até o terceiro nível e permite pular para cada seção. Em telas estreitas, toque em **Painel do documento** para recolher ou abrir o painel.
 
-Clique em **Markdown** para abrir a referência pesquisável. Ela reúne exemplos copiáveis de títulos (`#` até `######`), parágrafos, negrito, itálico, listas, listas de tarefas, citações, links, imagens, tabelas, código, HTML e outros recursos.
+A janela **Markdown** contém uma busca e exemplos copiáveis de títulos (`#` até `######`), parágrafos, quebras de linha, negrito, itálico, tachado, citações, listas ordenadas e não ordenadas, listas de tarefas, código em linha, blocos de código, tabelas, links, imagens, caracteres escapados e HTML.
 
-O atalho para abrir ou fechar a referência é **Ctrl+Alt+M**. **Ctrl+Shift+O** não é usado pelo site porque abre os favoritos em navegadores como Chrome e Edge.
+- Clique em **Markdown** ou pressione **Ctrl+Alt+M** para abrir ou fechar a referência.
+- `Ctrl+Shift+O` não é usado pelo site: nos navegadores comuns ele já abre favoritos ou o gerenciador de favoritos.
+- Links externos são abertos em outra aba.
+- Imagens precisam estar embutidas no documento. Imagens externas ou caminhos relativos não são exibidos.
+- O HTML é sanitizado antes de ser mostrado.
 
-### Diagramas Mermaid
+## Diagramas Mermaid
 
-Coloque o código do diagrama em um bloco identificado como `mermaid`:
+Um bloco de código com a linguagem `mermaid` vira um diagrama:
 
 ````markdown
 ```mermaid
@@ -70,25 +82,26 @@ flowchart TD
 ```
 ````
 
-O diagrama renderizado oferece **Ampliar**, **Baixar SVG**, **Baixar PNG** e **Baixar PDF**. Se o documento tiver dois ou mais diagramas, o painel permite baixar todos em um `.zip` com versões SVG e PNG. As opções de escala do PNG e fundo transparente também ficam no painel de exportação.
+O site renderiza tipos de diagrama Mermaid como fluxogramas, diagramas de sequência, estados, classes, entidades, Gantt, pizza, mapas mentais, linhas do tempo e outros. Se houver erro de sintaxe, o Leia-me mostra o aviso no lugar daquele desenho; o restante do documento continua disponível.
 
-### Imagens
+Cada diagrama tem os controles **Ampliar**, **Baixar SVG**, **Baixar PNG** e **Baixar PDF**. No painel **Diagramas**, selecione um diagrama para ir até ele. Quando o documento tem pelo menos dois diagramas, **Baixar todos (.zip)** cria um pacote SVG e PNG para cada um. A escala do PNG pode ser normal (1x), nítida (2x) ou alta resolução (3x), e é possível habilitar fundo transparente.
 
-O leitor exibe imagens embutidas no próprio documento. Imagens referenciadas por endereços externos ou caminhos relativos não são carregadas.
-
-## Exportar documentos
+## Exportar documentos e grupos
 
 No painel **Exportação**:
 
 - **Documento em PDF** gera páginas A4 numeradas.
-- **Documento em PNG** gera uma imagem do documento inteiro. Escolha a resolução normal, nítida ou alta.
-- Com uma pasta conectada, marque **Salvar na pasta escolhida** para gravar exportações na subpasta `exportados`. Desmarque a opção para baixar pelo navegador.
+- **Documento em PNG** gera uma imagem do documento inteiro; escolha a escala antes de exportar.
+- **Salvar na pasta escolhida** grava as exportações na subpasta `exportados` do diretório conectado. Desmarque para baixar pelo navegador.
 
-**Baixar todos (.zip)** reúne os diagramas do documento atual quando há dois ou mais. **Baixar a pasta (.zip)** reúne os documentos abertos e preserva a estrutura dos grupos.
+No painel **Pasta de arquivos**, **Baixar a pasta (.zip)** reúne os documentos abertos e mantém a estrutura das subpastas de grupos. Quando o guia interno é apenas uma aba virtual da pasta conectada, ele não corresponde a um arquivo nessa pasta.
 
-## Observações
+## Carregamento automático do README
 
-- Ao ler uma pasta, arquivos ocultos e arquivos com mais de 5 MB são ignorados.
-- O guia interno **Como usar o site** fica em uma aba separada e não pode ser removido.
-- Quando o site é servido por HTTP ou HTTPS, o `README.md` da raiz do projeto pode ser carregado automaticamente como documento.
-- Bibliotecas de leitura e exportação são carregadas pela internet; a conexão é necessária para esses recursos.
+Quando a página é aberta por HTTP ou HTTPS e não há uma pasta do computador conectada, o Leia-me tenta carregar `README.md` da raiz do projeto como um documento. Ao abrir a página diretamente como arquivo local (`file://`), use **Abrir arquivos** ou arraste o README para a página.
+
+## Aparência e requisitos
+
+O site adapta o tema claro ou escuro à preferência de aparência do navegador/sistema. A interface também se ajusta a telas menores, com painel recolhível e barras de abas e pastas que podem ser roladas horizontalmente.
+
+As bibliotecas de leitura, diagramas e exportação são carregadas pela internet. Para usar todos esses recursos, mantenha uma conexão disponível.
